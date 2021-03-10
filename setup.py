@@ -16,7 +16,6 @@ setup(
     packages=find_packages(),
     install_requires=[],
     scripts=[
-        'bin/rlpython-server',
         'bin/rlpython',
     ],
 )
