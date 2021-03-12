@@ -167,6 +167,12 @@ class Repl:
 
                 return
 
+            # emulated CTRL-C
+            if self.line_buffer.strip().endswith('!'):
+                self.handle_ctrl_c()
+
+                continue
+
             # multi line
             if not self._validate_line_buffer():
                 continue
@@ -189,6 +195,7 @@ class Repl:
         self.write('^D\n')
 
     def handle_ctrl_c(self):
+        self.exit_code = 1
         self.write('^C\n')
 
         self.clear_line_buffer()
