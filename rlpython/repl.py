@@ -31,7 +31,7 @@ class Repl:
                  prompt_ps2=DEFAULT_PROMPT_PS2,
                  history_file=DEFAULT_HISTORY_FILE,
                  history_size=DEFAULT_HISTORY_SIZE,
-                 globals=None, locals=None):
+                 globals={}, locals={}):
 
         self.banner = banner
         self.ps1 = prompt

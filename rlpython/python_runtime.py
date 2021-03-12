@@ -1,16 +1,15 @@
 from rlcompleter import Completer
 from pprint import pformat
-import builtins
 import inspect
 
 from rlpython.utils.attribute_table import AttributeTable
 
 
 class PythonRuntime:
-    def __init__(self, repl, globals=None, locals=None):
+    def __init__(self, repl, globals={}, locals={}):
         self.repl = repl
-        self.globals = globals or builtins.globals()
-        self.locals = locals or self.globals
+        self.globals = globals
+        self.locals = locals
 
         self.completer = Completer(namespace=self.locals)
 

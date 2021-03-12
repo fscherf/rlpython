@@ -54,7 +54,7 @@ if namespace.frontend_mode:
     os.tcsetpgrp(fd, pid)
 
 try:
-    embed(**embed_kwargs)
+    embed(globals={}, locals={}, **embed_kwargs)
 
 finally:
     if namespace.frontend_mode:
