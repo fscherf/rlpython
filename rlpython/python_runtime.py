@@ -207,6 +207,10 @@ class PythonRuntime:
                     self.write_description(return_value, describe)
 
                 elif return_value is not None:
-                    self.repl.write(pformat(return_value) + '\n')
+                    try:
+                        self.repl.write(pformat(return_value) + '\n')
+
+                    except Exception:
+                        self.repl.write(repr(return_value) + '\n')
 
         return exit_code
