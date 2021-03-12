@@ -10,10 +10,10 @@ def embed(*args, **kwargs):
     # use namespace of caller instead of own if nothing is set
     if 'globals' not in kwargs and 'locals' not in kwargs:
         stack = inspect.stack()
-        frame_info = stack[-1]
+        frame_info = stack[1]
 
         kwargs['globals'] = frame_info.frame.f_globals
-        kwargs['locals'] = frame_info.frame.f_globals
+        kwargs['locals'] = frame_info.frame.f_locals
 
     repl = Repl(*args, **kwargs)
 
