@@ -49,7 +49,11 @@ class PythonRuntime:
                 pass
 
         if filename:
-            lineno = inspect.getsourcelines(obj)[1]
+            try:
+                lineno = inspect.getsourcelines(obj)[1]
+
+            except Exception:
+                pass
 
         return filename, lineno
 
