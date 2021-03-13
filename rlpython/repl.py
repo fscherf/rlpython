@@ -42,6 +42,7 @@ class Repl:
         self.exit_code = 0
 
         # setup readline
+        readline.set_auto_history(False)
         readline.parse_and_bind('tab: complete')
         readline.set_completer(self.complete)
 
@@ -84,9 +85,6 @@ class Repl:
 
         # rotate history
         self.history = self.history[self.history_size*-1:]
-
-        # reset readline history
-        readline.clear_history()
 
         for item in self.history:
             readline.add_history(item)
