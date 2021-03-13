@@ -171,9 +171,10 @@ class Repl:
                 continue
 
             except EOFError:
-                self.handle_ctrl_d()
+                if self.handle_ctrl_d():
+                    return
 
-                return
+                continue
 
             # emulated CTRL-C
             if self.line_buffer.strip().endswith('!'):
@@ -200,13 +201,29 @@ class Repl:
         return self.python_runtime.complete(text, state)
 
     def handle_ctrl_d(self):
-        self.write('^D\n')
+        self.clear_line_buffer()
+        self.write('\n')
+
+        while True:
+            try:
+                answer = input('Do you really want to exit ([y]/n)? ')
+                answer = answer.strip().lower()
+
+                if answer in ('y', ''):
+                    return True
+
+                if answer == 'n':
+                    return False
+
+            except(EOFError, KeyboardInterrupt):
+                self.write('\n')
+
+                return False
 
     def handle_ctrl_c(self):
-        self.exit_code = 1
-        self.write('^C\n')
-
         self.clear_line_buffer()
+        self.write('^C\n')
+        self.exit_code = 1
 
     def run(self):
         try:
