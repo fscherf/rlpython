@@ -154,7 +154,7 @@ class Repl:
 
         return ps2
 
-    def embed(self):
+    def interact(self):
         while True:
             try:
                 self.line_buffer += input(self._gen_prompt()) + '\n'

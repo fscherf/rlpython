@@ -18,7 +18,7 @@ def embed(*args, **kwargs):
     repl = Repl(*args, **kwargs)
 
     try:
-        repl.embed()
+        repl.interact()
 
     finally:
         repl.write_history()
