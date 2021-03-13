@@ -17,7 +17,7 @@ def handle_command_line():
 
     namespace = argument_parser.parse_args()
 
-    embed_kwargs = {}
+    repl_kwargs = {}
 
     for key in dir(namespace):
         if key.startswith('_'):
@@ -31,7 +31,7 @@ def handle_command_line():
         if value is None:
             continue
 
-        embed_kwargs[key] = value
+        repl_kwargs[key] = value
 
     if namespace.frontend_mode:
         def restore_pgrp(*args, **kwargs):
@@ -52,7 +52,12 @@ def handle_command_line():
         os.tcsetpgrp(fd, pid)
 
     try:
-        embed(globals={}, locals={}, **embed_kwargs)
+        embed(
+            globals={},
+            locals={},
+            started_from_cmd_line=True,
+            **repl_kwargs,
+        )
 
     finally:
         if namespace.frontend_mode:

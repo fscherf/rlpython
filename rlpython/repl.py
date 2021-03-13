@@ -27,13 +27,15 @@ rlpython {}
 
 
 class Repl:
-    def __init__(self, banner=DEFAULT_BANNER, prompt=DEFAULT_PROMPT,
+    def __init__(self, banner=DEFAULT_BANNER, warnings=[],
+                 prompt=DEFAULT_PROMPT,
                  prompt_ps2=DEFAULT_PROMPT_PS2,
                  history_file=DEFAULT_HISTORY_FILE,
                  history_size=DEFAULT_HISTORY_SIZE,
                  globals={}, locals={}):
 
         self.banner = banner
+        self.warnings = warnings
         self.ps1 = prompt
         self.ps2 = prompt_ps2
         self.history_file = os.path.expanduser(history_file)
@@ -196,6 +198,9 @@ class Repl:
 
     def setup(self):
         self.write(self.banner)
+
+        for warning in self.warnings:
+            self.write(color('WARNING: {}\n'.format(warning), color='yellow'))
 
     def complete(self, text, state):
         return self.python_runtime.complete(text, state)
