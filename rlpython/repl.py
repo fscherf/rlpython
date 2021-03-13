@@ -99,14 +99,24 @@ class Repl:
             pass
 
     # error management ########################################################
-    def write_exception(self, exception):
+    def write_exception(self, exception, prefix=''):
         lines = format_exception(
             etype=type(exception),
             value=exception,
             tb=exception.__traceback__,
         )
 
-        self.write(color(''.join(lines), color='red'))
+        text = ''.join(lines)
+
+        if prefix:
+            lines = text.splitlines()
+
+            for index, line in enumerate(lines):
+                lines[index] = prefix + line
+
+            text = '\n'.join(lines) + '\n'
+
+        self.write(color(text, color='red'))
 
     # line buffer #############################################################
     def clear_line_buffer(self):
@@ -199,8 +209,14 @@ class Repl:
         self.clear_line_buffer()
 
     def run(self):
-        if self.line_buffer.startswith('%'):
-            self.exit_code = self.shell_runtime.run(self.line_buffer)
+        try:
+            if self.line_buffer.startswith('%'):
+                self.exit_code = self.shell_runtime.run(self.line_buffer)
 
-        else:
-            self.exit_code = self.python_runtime.run(self.line_buffer)
+            else:
+                self.exit_code = self.python_runtime.run(self.line_buffer)
+
+        except Exception as exception:
+            self.exit_code = 1
+
+            self.write_exception(exception, prefix='rlpython: ')
