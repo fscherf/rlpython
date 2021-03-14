@@ -14,6 +14,7 @@ from rlpython import VERSION_STRING
 
 DEFAULT_HISTORY_FILE = '~/.rlpython.history'
 DEFAULT_HISTORY_SIZE = 1000
+DEFAULT_PROMPT_PREFIX = ''
 DEFAULT_PROMPT = '>>> '
 DEFAULT_PROMPT_PS2 = '... '
 
@@ -28,6 +29,7 @@ rlpython {}
 
 class Repl:
     def __init__(self, banner=DEFAULT_BANNER, warnings=[],
+                 prompt_prefix=DEFAULT_PROMPT_PREFIX,
                  prompt=DEFAULT_PROMPT,
                  prompt_ps2=DEFAULT_PROMPT_PS2,
                  history_file=DEFAULT_HISTORY_FILE,
@@ -36,6 +38,7 @@ class Repl:
 
         self.banner = banner
         self.warnings = warnings
+        self.prompt_prefix = prompt_prefix
         self.ps1 = prompt
         self.ps2 = prompt_ps2
         self.history_file = os.path.expanduser(history_file)
@@ -137,13 +140,13 @@ class Repl:
             prompt_color = 'red'
 
         ps1 = color(
-            self.ps1,
+            self.prompt_prefix + self.ps1,
             color=prompt_color,
             style='bright',
         )
 
         ps2 = color(
-            self.ps2,
+            self.prompt_prefix + self.ps2,
             color=prompt_color,
             style='normal',
         )
