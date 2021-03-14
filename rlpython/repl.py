@@ -127,13 +127,21 @@ class Repl:
     def clear_line_buffer(self):
         self.line_buffer = ''
 
-    def _validate_line_buffer(self):
+    def validate_line_buffer(self):
         if self.line_buffer.startswith('%'):
             return self.shell_runtime.validate_source(self.line_buffer)
 
         return self.python_runtime.validate_source(self.line_buffer)
 
-    def _gen_prompt(self):
+    # I/O #####################################################################
+    def write_warnings(self):
+        for warning in self.warnings:
+            self.write(color('WARNING: {}\n'.format(warning), color='yellow'))
+
+    def write_banner(self):
+        self.write(self.banner)
+
+    def gen_prompt(self):
         prompt_color = 'green'
 
         if self.exit_code != 0:
@@ -154,7 +162,7 @@ class Repl:
         if not self.line_buffer:
             return ps1
 
-        if self._validate_line_buffer():
+        if self.validate_line_buffer():
             return ps1
 
         return ps2
@@ -162,7 +170,7 @@ class Repl:
     def interact(self):
         while True:
             try:
-                self.line_buffer += input(self._gen_prompt()) + '\n'
+                self.line_buffer += input(self.gen_prompt()) + '\n'
 
                 # handle empty lines
                 if not self.line_buffer.strip():
@@ -188,7 +196,7 @@ class Repl:
                 continue
 
             # multi line
-            if not self._validate_line_buffer():
+            if not self.validate_line_buffer():
                 continue
 
             self.add_history(self.line_buffer.strip())
@@ -200,10 +208,8 @@ class Repl:
         print(string, end='')
 
     def setup(self):
-        self.write(self.banner)
-
-        for warning in self.warnings:
-            self.write(color('WARNING: {}\n'.format(warning), color='yellow'))
+        self.write_banner()
+        self.write_warnings()
 
     def complete(self, text, state):
         return self.python_runtime.complete(text, state)
