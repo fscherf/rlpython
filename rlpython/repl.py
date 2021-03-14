@@ -163,7 +163,7 @@ class Repl:
 
                 # handle empty lines
                 if not self.line_buffer.strip():
-                    self.clear_line_buffer()
+                    self.handle_empty_line()
 
                     continue
 
@@ -204,6 +204,9 @@ class Repl:
 
     def complete(self, text, state):
         return self.python_runtime.complete(text, state)
+
+    def handle_empty_line(self):
+        self.clear_line_buffer()
 
     def handle_ctrl_d(self):
         self.clear_line_buffer()
