@@ -189,7 +189,7 @@ class Repl:
                 continue
 
             self.add_history(self.line_buffer.strip())
-            self.run()
+            self.run(self.line_buffer)
             self.clear_line_buffer()
 
     # application code ########################################################
@@ -230,15 +230,17 @@ class Repl:
         self.write('^C\n')
         self.exit_code = 1
 
-    def run(self):
+    def run(self, command):
         try:
-            if self.line_buffer.startswith('%'):
-                self.exit_code = self.shell_runtime.run(self.line_buffer)
+            if command.startswith('%'):
+                self.exit_code = self.shell_runtime.run(command)
 
             else:
-                self.exit_code = self.python_runtime.run(self.line_buffer)
+                self.exit_code = self.python_runtime.run(command)
 
         except Exception as exception:
             self.exit_code = 1
 
             self.write_exception(exception, prefix='rlpython: ')
+
+        return self.exit_code
