@@ -6,6 +6,11 @@ class EditCommand:
     NAME = 'edit'
 
     def run(self, repl, argv):
+        if repl.domain != repl.DOMAIN.LOCAL:
+            repl.write('ERROR: editing over network is not supported\n')
+
+            return 1
+
         # parse command line
         argument_parser = ReplArgumentParser(repl=repl, prog='edit')
         argument_parser.add_argument('object')

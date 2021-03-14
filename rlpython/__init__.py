@@ -4,7 +4,12 @@ VERSION = (0, 2)
 VERSION_STRING = '{}'.format('.'.join([str(i) for i in VERSION]))
 
 
-def embed(frontend=False, bind='', started_from_cmd_line=False, **repl_kwargs):
+def embed(single_threaded=False, bind='', started_from_cmd_line=False,
+          print=print, **repl_kwargs):
+
+    from rlpython.frontend import start_frontend
+    from rlpython.repl_server import ReplServer
+    from rlpython.utils.url import parse_url
     from rlpython.repl import Repl
 
     # use namespace of caller instead of own if nothing is set
@@ -15,27 +20,66 @@ def embed(frontend=False, bind='', started_from_cmd_line=False, **repl_kwargs):
         repl_kwargs['globals'] = frame_info.frame.f_globals
         repl_kwargs['locals'] = frame_info.frame.f_locals
 
-    # bind mode
+    # setup warnings
+    if 'warnings' not in repl_kwargs:
+        repl_kwargs['warnings'] = []
+
+    if not started_from_cmd_line:
+        repl_kwargs['warnings'].append('running single threaded: cancellation using CTRL-C will not work')  # NOQA
+
+    if single_threaded and not bind and not started_from_cmd_line:
+        repl_kwargs['warnings'].append('running single threaded: Use "!" to cancel multi line statements')  # NOQA
+
+    # network embed
     if bind:
-        raise NotImplementedError
+        single_threaded = True  # FIXME
 
-    # frontend mode
-    elif frontend:
-        raise NotImplementedError
+        # single threaded
+        if single_threaded:
+            host, port = parse_url(bind)
 
-    # non frontend mode
+            repl_server = ReplServer(
+                host=host,
+                port=port,
+                repl_domain=Repl.DOMAIN.NETWORK,
+            )
+
+            try:
+                repl_server.setup()
+
+                print('rlpython: running on {}:{}'.format(host, port))
+
+                repl_server.run_single_threaded(**repl_kwargs)
+
+            except OSError as exception:
+                exit('rlpython: ERROR: {}'.format(exception.args[1]))
+
+        # multi threaded
+        else:
+            raise NotImplementedError
+
+    # local embed
     else:
-        if not started_from_cmd_line:
-            if 'warnings' not in repl_kwargs:
-                repl_kwargs['warnings'] = []
 
-            repl_kwargs['warnings'].append(
-                'running without frontend (Use "!" instead of CTRL-C)')
+        # single threaded
+        if single_threaded:
+            repl = Repl(**repl_kwargs)
 
-        repl = Repl(**repl_kwargs)
+            try:
+                repl.interact()
 
-        try:
-            repl.interact()
+            finally:
+                repl.write_history()
 
-        finally:
-            repl.write_history()
+        # multi threaded
+        else:
+            repl_server = ReplServer(
+                repl_domain=Repl.DOMAIN.LOCAL_NETWORK,
+            )
+
+            repl_server.setup()
+            port = repl_server.get_port()
+
+            start_frontend(port)
+
+            repl_server.run_single_threaded(**repl_kwargs)

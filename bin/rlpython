@@ -3,4 +3,8 @@
 
 from rlpython.command_line import handle_command_line
 
-handle_command_line()
+try:
+    handle_command_line()
+
+except KeyboardInterrupt:
+    exit(0)
