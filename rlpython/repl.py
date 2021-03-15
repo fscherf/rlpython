@@ -28,6 +28,11 @@ rlpython {}
 
 
 class Repl:
+    class DOMAIN:
+        LOCAL = 1
+        NETWORK = 2
+        LOCAL_NETWORK = 3
+
     def __init__(self, banner=DEFAULT_BANNER, warnings=[],
                  prompt_prefix=DEFAULT_PROMPT_PREFIX,
                  prompt=DEFAULT_PROMPT,
@@ -67,6 +72,17 @@ class Repl:
         # finish
         self.clear_line_buffer()
         self.setup()
+
+    # domain ##################################################################
+    @property
+    def domain(self):
+        if not hasattr(self, '_domain'):
+            self._domain = self.DOMAIN.LOCAL
+
+        return self._domain
+
+    def set_domain(self, domain):
+        self._domain = domain
 
     # history #################################################################
     def read_history(self):
