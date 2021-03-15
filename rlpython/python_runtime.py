@@ -194,7 +194,7 @@ class PythonRuntime:
         except KeyboardInterrupt:
             exit_code = 1
 
-            self.relp.write('\n')
+            self.repl.write('\n')
 
         except Exception as exception:
             exit_code = 1
