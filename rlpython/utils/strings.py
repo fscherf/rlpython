@@ -17,12 +17,14 @@ STYLE_CODES = {
 }
 
 
-def color(string, color, style='normal', reset=True):
-    string = '\001\033[{};{}m\002{}'.format(
-        STYLE_CODES[style],
-        COLOR_CODES[color],
-        string,
-    )
+def color(string, fg='', bg='', style='normal', reset=True):
+    if fg:
+        fg = COLOR_CODES[fg]
+
+    if style:
+        style = STYLE_CODES[style]
+
+    string = '\001\033[{};{}m\002{}'.format(style, fg, string)
 
     if reset:
         string += '\001\033[0m\002'

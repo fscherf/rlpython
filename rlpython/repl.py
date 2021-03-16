@@ -9,7 +9,7 @@ import os
 
 from rlpython.python_runtime import PythonRuntime
 from rlpython.shell_runtime import ShellRuntime
-from rlpython.utils.color import color
+from rlpython.utils.strings import color
 from rlpython import VERSION_STRING
 
 DEFAULT_HISTORY_FILE = '~/.rlpython.history'
@@ -137,7 +137,7 @@ class Repl:
 
             text = '\n'.join(lines) + '\n'
 
-        self.write(color(text, color='red'))
+        self.write(color(text, fg='red'))
 
     # line buffer #############################################################
     def clear_line_buffer(self):
@@ -152,7 +152,7 @@ class Repl:
     # I/O #####################################################################
     def write_warnings(self):
         for warning in self.warnings:
-            self.write(color('WARNING: {}\n'.format(warning), color='yellow'))
+            self.write(color('WARNING: {}\n'.format(warning), fg='yellow'))
 
     def write_banner(self):
         self.write(self.banner)
@@ -165,13 +165,13 @@ class Repl:
 
         ps1 = color(
             self.prompt_prefix + self.ps1,
-            color=prompt_color,
+            fg=prompt_color,
             style='bright',
         )
 
         ps2 = color(
             self.prompt_prefix + self.ps2,
-            color=prompt_color,
+            fg=prompt_color,
             style='normal',
         )
 

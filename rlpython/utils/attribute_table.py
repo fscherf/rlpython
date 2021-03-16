@@ -1,4 +1,4 @@
-from rlpython.utils.color import color
+from rlpython.utils.strings import color
 
 
 class AttributeTable:
@@ -13,7 +13,7 @@ class AttributeTable:
 
         for row in self.rows:
             line = '{}: {}'.format(
-                color(row[0].rjust(header_length), color='red'),
+                color(row[0].rjust(header_length), fg='red'),
                 row[1],
             )
 
