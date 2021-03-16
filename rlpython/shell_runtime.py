@@ -22,6 +22,17 @@ class ShellRuntime:
 
         self.commands[name] = command
 
+    def complete(self, text, state, line_buffer):
+        candidates = []
+
+        for name in sorted(self.commands.keys()):
+            if name.startswith(text):
+                candidates.append(name)
+
+        candidates.append(None)
+
+        return candidates[state]
+
     def validate_source(self, raw_source):
         try:
             shlex.split(raw_source)

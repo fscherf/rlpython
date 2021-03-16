@@ -228,7 +228,19 @@ class Repl:
         self.write_warnings()
 
     def complete(self, text, state):
-        return self.python_runtime.complete(text, state)
+        rl_line_buffer = readline.get_line_buffer()
+
+        if rl_line_buffer.startswith('%'):
+            rl_line_buffer = rl_line_buffer[1:]
+
+            return self.shell_runtime.complete(
+                text=text,
+                state=state,
+                line_buffer=rl_line_buffer,
+            )
+
+        else:
+            return self.python_runtime.complete(text, state)
 
     def handle_empty_line(self):
         self.clear_line_buffer()
