@@ -30,3 +30,20 @@ def color(string, fg='', bg='', style='normal', reset=True):
         string += '\001\033[0m\002'
 
     return string
+
+
+def get_length(string):
+    length = 0
+    quoted = False
+
+    for character in string:
+        if character == '\001':
+            quoted = True
+
+        elif character == '\002':
+            quoted = False
+
+        elif not quoted:
+            length += 1
+
+    return length
