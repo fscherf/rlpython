@@ -1,9 +1,11 @@
 import shlex
 
 from rlpython.utils.argument_parser import ReplArgumentParserError
+from rlpython.commands.threads import ThreadsCommand
 from rlpython.commands.edit import EditCommand
 
 DEFAULT_COMMANDS = [
+    ThreadsCommand,
     EditCommand,
 ]
 
