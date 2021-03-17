@@ -44,7 +44,7 @@ def embed(single_threaded=False, bind='', started_from_cmd_line=False,
             try:
                 repl_server.setup()
 
-                print('rlpython: running on {}:{}'.format(host, port))
+                print('rlpython: running on {}:{}'.format(host, repl_server.get_port()))  # NOQA
 
                 repl_server.run_single_threaded(**repl_kwargs)
 
