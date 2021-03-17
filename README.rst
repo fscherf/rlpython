@@ -4,6 +4,47 @@ rlpython
 rlpython is a GNU Readline based Python REPL without any external dependencies
 
 
+Installation
+------------
+
+.. code-block:: text
+
+    # pip install rlpython
+
+
+Starting rlpython from the command line
+---------------------------------------
+
+.. code-block:: text
+
+    # rlpython
+
+
+Starting rlpython from Python code
+----------------------------------
+
+.. code-block:: python
+
+    import rlpython
+
+    rlpython.embed()
+
+
+Attach a rlpython shell over network
+-------------------------------------
+
+.. code-block:: python
+
+    import rlpython
+
+    rlpython.embed(bind='localhost:5000')
+
+
+.. code-block:: text
+
+    # rlpython localhost:5000
+
+
 Examples
 --------
 
@@ -27,22 +68,3 @@ Examples
 
     # open the source code of a python object in your local editor
     %edit argparse.ArgumentParser.add_argument
-
-
-Installation
-------------
-
-.. code-block:: text
-
-    # pip install rlpython
-    # rlpython
-
-
-Starting rlpython from a Python script
---------------------------------------
-
-.. code-block:: python
-
-    import rlpython
-
-    rlpython.embed()
