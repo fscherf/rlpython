@@ -53,7 +53,14 @@ def handle_command_line():
             frontend_mode=namespace.frontend_mode,
         )
 
-        repl_client.interact()
+        try:
+            repl_client.interact()
+
+        finally:
+            repl_client.shutdown()
+
+            if namespace.frontend_mode:
+                restore_pgrp()
 
         if namespace.frontend_mode:
             restore_pgrp()

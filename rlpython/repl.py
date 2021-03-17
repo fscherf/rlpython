@@ -73,6 +73,13 @@ class Repl:
         self.clear_line_buffer()
         self.setup()
 
+    def shutdown(self):
+        self.python_runtime.shutdown()
+        self.shell_runtime.shutdown()
+
+        if self.domain == self.DOMAIN.LOCAL:
+            self.write_history()
+
     # domain ##################################################################
     @property
     def domain(self):

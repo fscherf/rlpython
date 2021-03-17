@@ -18,6 +18,9 @@ class ShellRuntime:
         for command in DEFAULT_COMMANDS:
             self.install_command(command)
 
+    def shutdown(self):
+        pass
+
     def install_command(self, command_class, name=''):
         command = command_class()
         name = name or command.NAME

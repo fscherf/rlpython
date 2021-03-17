@@ -21,6 +21,13 @@ class PythonRuntime:
         self.locals['_rlpython'] = self.repl
         self.locals['_exception'] = None
 
+    def shutdown(self):
+        del self.globals['print']
+
+        del self.locals['_']
+        del self.locals['_rlpython']
+        del self.locals['_exception']
+
     def complete(self, text, state):
         return self.completer.complete(text, state)
 

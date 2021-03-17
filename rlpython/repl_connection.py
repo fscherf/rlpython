@@ -78,6 +78,9 @@ class ReplConnection:
 
         self.repl.set_domain(self.repl_domain)
 
+    def shutdown(self):
+        self.repl.shutdown()
+
     def handle_message(self, raw_message):
         message_is_valid, message_type, payload = decode_message(raw_message)
 

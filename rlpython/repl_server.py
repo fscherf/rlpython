@@ -19,10 +19,15 @@ class ReplServer:
         self.sock.bind((self.host, self.port))
         self.sock.listen(1)
 
+    def shutdown(self):
+        pass
+
     def get_port(self):
         return self.sock.getsockname()[1]
 
     def run_single_threaded(self, **repl_kwargs):
+        repl_connection = None
+
         try:
             connection, address = self.sock.accept()
 
@@ -38,3 +43,7 @@ class ReplServer:
 
         except KeyboardInterrupt:
             return
+
+        finally:
+            if repl_connection:
+                repl_connection.shutdown()

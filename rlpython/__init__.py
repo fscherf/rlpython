@@ -54,6 +54,9 @@ def embed(single_threaded=False, bind='', started_from_cmd_line=False,
             except OSError as exception:
                 exit('rlpython: ERROR: {}'.format(exception.args[1]))
 
+            finally:
+                repl_server.shutdown()
+
         # multi threaded
         else:
             raise NotImplementedError
@@ -69,7 +72,7 @@ def embed(single_threaded=False, bind='', started_from_cmd_line=False,
                 repl.interact()
 
             finally:
-                repl.write_history()
+                repl.shutdown()
 
         # multi threaded
         else:
