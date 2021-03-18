@@ -1,6 +1,8 @@
 PYTHON=python3
-PYTHON_VENV=env
-PYTHON_PACKAGING_VENV=env-packaging
+
+PYTHON_ENV_ROOT=envs
+PYTHON_VENV=$(PYTHON_ENV_ROOT)/$(PYTHON)-env
+PYTHON_PACKAGING_VENV=$(PYTHON_ENV_ROOT)/$(PYTHON)-packaging-env
 
 .PHONY: clean
 
@@ -15,10 +17,7 @@ $(PYTHON_VENV)/.created:
 
 env: $(PYTHON_VENV)/.created
 
-clean:
-	rm -rf $(PYTHON_VENV)
-
-# packaging ###################################################################
+# packaging environment #######################################################
 $(PYTHON_PACKAGING_VENV)/.created: REQUIREMENTS.packaging.txt
 	rm -rf $(PYTHON_PACKAGING_VENV) && \
 	$(PYTHON) -m venv $(PYTHON_PACKAGING_VENV) && \
@@ -37,3 +36,9 @@ sdist: packaging-env
 _release: sdist
 	. $(PYTHON_PACKAGING_VENV)/bin/activate && \
 	twine upload --config-file ~/.pypirc.fscherf dist/*
+
+# helper ######################################################################
+clean:
+	rm -rf $(PYTHON_ENV_ROOT)
+
+envs: env packaging-env

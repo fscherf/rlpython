@@ -275,4 +275,4 @@ tags
 # Persistent undo
 [._]*.un~
 
-/env-packaging/
+/envs/
