@@ -35,5 +35,5 @@ sdist: packaging-env
 	./setup.py sdist
 
 _release: sdist
-	. $(PYTHON_VENV)/bin/activate && \
+	. $(PYTHON_PACKAGING_VENV)/bin/activate && \
 	twine upload --config-file ~/.pypirc.fscherf dist/*
