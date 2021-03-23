@@ -76,6 +76,14 @@ class PythonRuntime:
 
         return string
 
+    # buffer helper ###########################################################
+    def write_representation(self, value):
+        try:
+            self.repl.write(pformat(value) + '\n')
+
+        except Exception:
+            self.repl.write(repr(value) + '\n')
+
     def write_short_description(self, value):
         attribute_table = AttributeTable()
 
@@ -217,10 +225,6 @@ class PythonRuntime:
                     self.write_description(return_value, describe)
 
                 elif return_value is not None:
-                    try:
-                        self.repl.write(pformat(return_value) + '\n')
-
-                    except Exception:
-                        self.repl.write(repr(return_value) + '\n')
+                    self.write_representation(return_value)
 
         return exit_code
