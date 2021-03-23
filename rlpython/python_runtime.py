@@ -78,11 +78,16 @@ class PythonRuntime:
 
     # buffer helper ###########################################################
     def write_representation(self, value):
-        try:
-            self.repl.write(pformat(value) + '\n')
+        if self.repl.variables.get('pretty_print', True):
+            try:
+                self.repl.write(pformat(value) + '\n')
 
-        except Exception:
-            self.repl.write(repr(value) + '\n')
+                return
+
+            except Exception:
+                pass
+
+        self.repl.write(repr(value) + '\n')
 
     def write_short_description(self, value):
         attribute_table = AttributeTable()
