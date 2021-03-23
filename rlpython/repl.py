@@ -26,6 +26,10 @@ rlpython {}
     VERSION_STRING,
 )
 
+DEFAULT_VARIABLES = {
+    'pretty_print': True,
+}
+
 
 class Repl:
     class DOMAIN:
@@ -39,7 +43,7 @@ class Repl:
                  prompt_ps2=DEFAULT_PROMPT_PS2,
                  history_file=DEFAULT_HISTORY_FILE,
                  history_size=DEFAULT_HISTORY_SIZE,
-                 globals={}, locals={}):
+                 globals={}, locals={}, **variables):
 
         self.banner = banner
         self.warnings = warnings
@@ -50,6 +54,11 @@ class Repl:
         self.history_size = history_size
 
         self.exit_code = 0
+
+        self.variables = {
+            **DEFAULT_VARIABLES,
+            **variables,
+        }
 
         # setup readline
         readline.set_auto_history(False)
