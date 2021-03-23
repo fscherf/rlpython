@@ -162,11 +162,14 @@ class PythonRuntime:
             return False
 
     # code running ############################################################
-    def eval(self, source):
+    def eval(self, source, safe=True):
         try:
             return eval(source, self.globals, self.locals)
 
         except Exception:
+            if not safe:
+                raise
+
             return None
 
     def run(self, raw_source):
