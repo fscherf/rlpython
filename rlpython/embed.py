@@ -1,8 +1,8 @@
 import inspect
 
 
-def embed(single_threaded=False, bind='', started_from_cmd_line=False,
-          print=print, **repl_kwargs):
+def embed(single_threaded=False, bind='', multi_session=False,
+          started_from_cmd_line=False, print=print, **repl_kwargs):
 
     from rlpython.frontend import start_frontend
     from rlpython.repl_server import ReplServer
@@ -39,14 +39,18 @@ def embed(single_threaded=False, bind='', started_from_cmd_line=False,
                 host=host,
                 port=port,
                 repl_domain=Repl.DOMAIN.NETWORK,
+                **repl_kwargs,
             )
+
+            if multi_session:
+                return repl_server
 
             try:
                 repl_server.setup()
 
                 print('rlpython: running on {}:{}'.format(host, repl_server.get_port()))  # NOQA
 
-                repl_server.run_single_threaded(**repl_kwargs)
+                repl_server.run_single_session(**repl_kwargs)
 
             except OSError as exception:
                 exit('rlpython: ERROR: {}'.format(exception.args[1]))
@@ -82,4 +86,4 @@ def embed(single_threaded=False, bind='', started_from_cmd_line=False,
 
             start_frontend(port)
 
-            repl_server.run_single_threaded(**repl_kwargs)
+            repl_server.run_single_session(**repl_kwargs)
