@@ -1,4 +1,3 @@
-from rlcompleter import Completer
 from pprint import pformat
 import inspect
 
@@ -10,8 +9,6 @@ class PythonRuntime:
         self.repl = repl
         self.globals = globals
         self.locals = locals
-
-        self.completer = Completer(namespace=self.locals)
 
         # override print
         self.globals['print'] = self.print_function
@@ -27,9 +24,6 @@ class PythonRuntime:
         del self.locals['_']
         del self.locals['_rlpython']
         del self.locals['_exception']
-
-    def complete(self, text, state):
-        return self.completer.complete(text, state)
 
     def print_function(self, *strings, end='\n'):
         string = ' '.join([str(i) for i in strings]) + end

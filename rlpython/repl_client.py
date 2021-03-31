@@ -99,19 +99,22 @@ class ReplClient(Repl):
         self.write_warnings()
 
     def complete(self, text, state):
+        line_buffer = readline.get_line_buffer()
+
         # handle starting tabs in multi line statements locally
-        if not text.strip():
+        if not line_buffer.strip() and not text.strip():
             if state == 0:
                 readline.insert_text('\t')
                 readline.redisplay()
 
                 return ''
 
-            else:
-                return None
+            return None
 
         # remote completion
-        self.send_message(encode_completion_request_message(text, state))
+        self.send_message(
+            encode_completion_request_message(text, state, line_buffer)
+        )
 
         while True:
             disconnected, message_type, payload = self.recv_message()

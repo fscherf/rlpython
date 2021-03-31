@@ -9,6 +9,7 @@ import os
 
 from rlpython.python_runtime import PythonRuntime
 from rlpython.shell_runtime import ShellRuntime
+from rlpython.completion import Completer
 from rlpython.utils.strings import color
 from rlpython import VERSION_STRING
 
@@ -52,6 +53,8 @@ class Repl:
         self.ps2 = prompt_ps2
         self.history_file = os.path.expanduser(history_file)
         self.history_size = history_size
+        self.globals = globals
+        self.locals = locals
 
         self.exit_code = 0
 
@@ -59,6 +62,9 @@ class Repl:
             **DEFAULT_VARIABLES,
             **variables,
         }
+
+        # setup completion
+        self.completer = Completer(repl=self)
 
         # setup readline
         readline.set_auto_history(False)
@@ -251,19 +257,9 @@ class Repl:
         self.write_warnings()
 
     def complete(self, text, state):
-        rl_line_buffer = readline.get_line_buffer()
+        line_buffer = readline.get_line_buffer()
 
-        if rl_line_buffer.startswith('%'):
-            rl_line_buffer = rl_line_buffer[1:]
-
-            return self.shell_runtime.complete(
-                text=text,
-                state=state,
-                line_buffer=rl_line_buffer,
-            )
-
-        else:
-            return self.python_runtime.complete(text, state)
+        return self.completer.complete(text, state, line_buffer)
 
     def handle_empty_line(self):
         self.clear_line_buffer()

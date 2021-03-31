@@ -75,8 +75,10 @@ def encode_ready_message():
     return encode_message([MESSAGE_TYPE.READY, None])
 
 
-def encode_completion_request_message(text, state):
-    return encode_message([MESSAGE_TYPE.COMPLETION_REQUEST, [text, state]])
+def encode_completion_request_message(text, state, line_buffer):
+    return encode_message(
+        [MESSAGE_TYPE.COMPLETION_REQUEST, [text, state, line_buffer]],
+    )
 
 
 def encode_completion_response_message(return_value):

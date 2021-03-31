@@ -55,11 +55,6 @@ class SocketRepl(Repl):
 
         self.write_message(encode_exit_code_message(exit_code))
 
-    def complete(self, text, state):
-        response = super().complete(text, state)
-
-        self.write_message(encode_completion_response_message(response))
-
 
 class ReplConnection:
     def __init__(self, repl_server, connection, address, repl_domain,
@@ -103,9 +98,13 @@ class ReplConnection:
 
         # completion request
         elif message_type == MESSAGE_TYPE.COMPLETION_REQUEST:
-            text, state = payload
+            text, state, line_buffer = payload
 
-            self.repl.complete(text, state)
+            response = self.repl.completer.complete(text, state, line_buffer)
+
+            self.repl.write_message(
+                encode_completion_response_message(response),
+            )
 
     def run_single_threaded(self):
         message_buffer = bytes()
