@@ -43,7 +43,7 @@ class Repl:
                  prompt_ps2=DEFAULT_PROMPT_PS2,
                  history_file=DEFAULT_HISTORY_FILE,
                  history_size=DEFAULT_HISTORY_SIZE,
-                 globals={}, locals={}, **variables):
+                 globals={}, locals={}, commands=[], **variables):
 
         self.banner = banner
         self.warnings = warnings
@@ -78,6 +78,9 @@ class Repl:
             repl=self,
         )
 
+        for command in commands:
+            self.install_command(command)
+
         # finish
         self.clear_line_buffer()
         self.setup()
@@ -99,6 +102,10 @@ class Repl:
 
     def set_domain(self, domain):
         self._domain = domain
+
+    # shell commands ##########################################################
+    def install_command(self, command):
+        self.shell_runtime.install_command(command)
 
     # history #################################################################
     def read_history(self):
