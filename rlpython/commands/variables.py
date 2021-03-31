@@ -5,12 +5,12 @@ from rlpython.utils.table import write_table
 from rlpython.utils.strings import color
 
 
-class SetCommand:
-    NAME = 'set'
+class VariablesCommand:
+    NAME = 'vars'
 
     def run(self, repl, argv):
         # parse command line
-        argument_parser = ReplArgumentParser(repl=repl, prog='set')
+        argument_parser = ReplArgumentParser(repl=repl, prog='vars')
         argument_parser.add_argument('variable', nargs='?')
 
         arguments = argument_parser.parse_args(argv[1:])
