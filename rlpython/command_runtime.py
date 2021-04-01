@@ -12,7 +12,7 @@ DEFAULT_COMMANDS = [
 ]
 
 
-class ShellRuntime:
+class CommandRuntime:
     def __init__(self, repl):
         self.repl = repl
         self.commands = {}

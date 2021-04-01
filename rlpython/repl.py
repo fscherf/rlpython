@@ -7,8 +7,8 @@ import json
 import sys
 import os
 
+from rlpython.command_runtime import CommandRuntime
 from rlpython.python_runtime import PythonRuntime
-from rlpython.shell_runtime import ShellRuntime
 from rlpython.completion import Completer
 from rlpython.utils.strings import color
 from rlpython import VERSION_STRING
@@ -80,7 +80,7 @@ class Repl:
             locals=locals,
         )
 
-        self.shell_runtime = ShellRuntime(
+        self.command_runtime = CommandRuntime(
             repl=self,
         )
 
@@ -93,7 +93,7 @@ class Repl:
 
     def shutdown(self):
         self.python_runtime.shutdown()
-        self.shell_runtime.shutdown()
+        self.command_runtime.shutdown()
 
         if self.domain == self.DOMAIN.LOCAL:
             self.write_history()
@@ -109,9 +109,9 @@ class Repl:
     def set_domain(self, domain):
         self._domain = domain
 
-    # shell commands ##########################################################
+    # commands ################################################################
     def install_command(self, command):
-        self.shell_runtime.install_command(command)
+        self.command_runtime.install_command(command)
 
     # history #################################################################
     def read_history(self):
@@ -174,7 +174,7 @@ class Repl:
 
     def validate_line_buffer(self):
         if self.line_buffer.startswith('%'):
-            return self.shell_runtime.validate_source(self.line_buffer)
+            return self.command_runtime.validate_source(self.line_buffer)
 
         return self.python_runtime.validate_source(self.line_buffer)
 
@@ -292,7 +292,7 @@ class Repl:
     def run(self, command):
         try:
             if command.startswith('%'):
-                self.exit_code = self.shell_runtime.run(command)
+                self.exit_code = self.command_runtime.run(command)
 
             else:
                 self.exit_code = self.python_runtime.run(command)
