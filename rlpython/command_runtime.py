@@ -1,5 +1,6 @@
 import shlex
 
+from rlpython.commands.unix_environment import UnixEnvironmentCommand
 from rlpython.utils.argument_parser import ReplArgumentParserError
 from rlpython.commands.variables import VariablesCommand
 from rlpython.commands.threads import ThreadsCommand
@@ -8,6 +9,7 @@ from rlpython.commands.loops import LoopsCommand
 from rlpython.commands.edit import EditCommand
 
 DEFAULT_COMMANDS = [
+    UnixEnvironmentCommand,
     VariablesCommand,
     ThreadsCommand,
     TasksCommand,
