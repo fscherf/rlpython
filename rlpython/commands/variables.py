@@ -8,9 +8,12 @@ from rlpython.utils.strings import color
 class VariablesCommand:
     NAME = 'vars'
 
-    def run(self, repl, argv):
+    def __init__(self, repl):
+        self.repl = repl
+
+    def run(self, argv):
         # parse command line
-        argument_parser = ReplArgumentParser(repl=repl, prog='vars')
+        argument_parser = ReplArgumentParser(repl=self.repl, prog='vars')
         argument_parser.add_argument('variable', nargs='?')
 
         arguments = argument_parser.parse_args(argv[1:])
@@ -21,19 +24,20 @@ class VariablesCommand:
                 ['Name', 'Value'],
             ]
 
-            for key, value in repl.variables.items():
+            for key, value in self.repl.variables.items():
                 table.append([
                     str(key),
                     pformat(value),
                 ])
 
-            write_table(table, repl.write)
+            write_table(table, self.repl.write)
 
             return 0
 
         # print variable
         if '=' not in arguments.variable:
-            repl.write(repr(repl.variables.get(arguments.variable, '')) + '\n')
+            self.repl.write(
+                repr(self.repl.variables.get(arguments.variable, '')) + '\n')
 
             return 0
 
@@ -41,10 +45,10 @@ class VariablesCommand:
         name, value = arguments.variable.split('=')
 
         try:
-            value = repl.python_runtime.eval(value, safe=False)
+            value = self.repl.python_runtime.eval(value, safe=False)
 
         except Exception:
-            repl.write(
+            self.repl.write(
                 color(
                     "ERROR: '{}' is no valid python expression\n".format(value),  # NOQA
                     fg='red',
@@ -53,4 +57,4 @@ class VariablesCommand:
 
             return 1
 
-        repl.variables[name] = value
+        self.repl.variables[name] = value

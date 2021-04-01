@@ -24,7 +24,7 @@ class ShellRuntime:
         pass
 
     def install_command(self, command_class, name=''):
-        command = command_class()
+        command = command_class(self.repl)
         name = name or command.NAME
 
         self.commands[name] = command
@@ -48,7 +48,7 @@ class ShellRuntime:
             return
 
         try:
-            exit_code = self.commands[name].run(self.repl, argv)
+            exit_code = self.commands[name].run(argv)
 
             if exit_code is None:
                 exit_code = 0

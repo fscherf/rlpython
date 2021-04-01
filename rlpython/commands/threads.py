@@ -10,6 +10,9 @@ from rlpython.utils.strings import color
 class ThreadsCommand:
     NAME = 'threads'
 
+    def __init__(self, repl):
+        self.repl = repl
+
     def complete(self, text, state, line_buffer):
         names = []
 
@@ -35,9 +38,9 @@ class ThreadsCommand:
 
         return None, None
 
-    def run(self, repl, argv):
+    def run(self, argv):
         # parse command line
-        argument_parser = ReplArgumentParser(repl=repl, prog='threads')
+        argument_parser = ReplArgumentParser(repl=self.repl, prog='threads')
         argument_parser.add_argument('identifier', nargs='?')
 
         arguments = vars(argument_parser.parse_args(argv[1:]))
@@ -47,19 +50,21 @@ class ThreadsCommand:
             thread, frame = self.find_frame(arguments['identifier'])
 
             if not thread:
-                repl.write(color('ERROR: invalid thread ident\n', fg='red'))
+                self.repl.write(
+                    color('ERROR: invalid thread ident\n', fg='red')
+                )
 
                 return 1
 
-            repl.write('STACK: {} id={}\n'.format(
+            self.repl.write('STACK: {} id={}\n'.format(
                 thread.getName(),
                 str(thread.ident),
             ))
 
             for line in traceback.format_stack(frame):
-                repl.write(line)
+                self.repl.write(line)
 
-            repl.write('END STACK\n')
+            self.repl.write('END STACK\n')
 
             return 0
 
@@ -85,4 +90,4 @@ class ThreadsCommand:
                 task,
             ])
 
-        write_table(rows, repl.write)
+        write_table(rows, self.repl.write)
