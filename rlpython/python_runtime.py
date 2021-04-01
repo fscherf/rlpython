@@ -1,7 +1,7 @@
 from pprint import pformat
 import inspect
 
-from rlpython.utils.attribute_table import AttributeTable
+from rlpython.utils.attribute_table import write_attribute_table
 
 
 class PythonRuntime:
@@ -84,16 +84,16 @@ class PythonRuntime:
         self.repl.write(repr(value) + '\n')
 
     def write_short_description(self, value):
-        attribute_table = AttributeTable()
+        rows = []
 
-        attribute_table.add_row(['id', hex(id(value))])
-        attribute_table.add_row(['type', repr(type(value))])
+        rows.append(['id', hex(id(value))])
+        rows.append(['type', repr(type(value))])
 
         # filename
         filename = self.get_file_string(value)
 
         if filename:
-            attribute_table.add_row(['file', filename])
+            rows.append(['file', filename])
 
         # signature
         if callable(value):
@@ -103,14 +103,13 @@ class PythonRuntime:
                     inspect.signature(value),
                 )
 
-                attribute_table.add_row(['signature', signature])
+                rows.append(['signature', signature])
 
             except Exception:
                 pass
 
         # write to repl
-        for line in attribute_table:
-            self.repl.write(line + '\n')
+        write_attribute_table(rows, self.repl.write, header_fg='red')
 
     def write_long_description(self, value):
         documentation = inspect.getdoc(value)

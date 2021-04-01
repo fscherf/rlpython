@@ -1,20 +1,13 @@
 from rlpython.utils.strings import color
 
 
-class AttributeTable:
-    def __init__(self):
-        self.rows = []
+def write_attribute_table(rows, write, header_fg=None):
+    header_length = max([len(row[0]) for row in rows]) + 1
 
-    def add_row(self, row):
-        self.rows.append(row)
+    for row in rows:
+        header = row[0].rjust(header_length)
 
-    def __iter__(self):
-        header_length = max([len(row[0]) for row in self.rows]) + 1
+        if header_fg is not None:
+            header = color(header, fg=header_fg)
 
-        for row in self.rows:
-            line = '{}: {}'.format(
-                color(row[0].rjust(header_length), fg='red'),
-                row[1],
-            )
-
-            yield line
+        write('{}: {}\n'.format(header, row[1]))
