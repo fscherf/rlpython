@@ -88,8 +88,14 @@ class ReplConnection:
         if not message_is_valid:
             return
 
-        # ping
+        # ping (empty line)
         if message_type == MESSAGE_TYPE.PING:
+            if self.repl.variables['repeat_last_command_on_enter']:
+                command = self.repl.history[-1]
+
+                self.repl.write(command + '\n')
+                self.repl.run(command)
+
             self.repl.write_message(encode_pong_message())
 
         # run

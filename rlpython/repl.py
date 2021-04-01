@@ -30,6 +30,7 @@ rlpython {}
 
 DEFAULT_VARIABLES = {
     'pretty_print': True,
+    'repeat_last_command_on_enter': False,
 }
 
 
@@ -268,6 +269,12 @@ class Repl:
 
     def handle_empty_line(self):
         self.clear_line_buffer()
+
+        if self.variables['repeat_last_command_on_enter']:
+            command = self.history[-1]
+
+            self.write(command + '\n')
+            self.run(command)
 
     def handle_ctrl_d(self):
         self.clear_line_buffer()

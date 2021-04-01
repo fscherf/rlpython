@@ -144,6 +144,10 @@ class ReplClient(Repl):
             if disconnected:
                 exit(1)
 
+            # write
+            if message_type == MESSAGE_TYPE.WRITE:
+                self.write(payload)
+
             # pong
             if message_type == MESSAGE_TYPE.PONG:
                 return
