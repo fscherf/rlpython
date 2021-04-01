@@ -10,7 +10,20 @@ class Completer:
     def python_complete(self, text, state):
         return self.rlcompleter.complete(text, state)
 
-    def shell_complete(self, text, state):
+    def shell_complete(self, text, state, line_buffer):
+        # run custom completion
+        if ' ' in line_buffer:
+            command_name = line_buffer.split(' ', 1)[0]
+
+            if(command_name and
+               command_name in self.repl.shell_runtime.commands):
+
+                command = self.repl.shell_runtime.commands[command_name]
+
+                if hasattr(command, 'complete'):
+                    return command.complete(text, state, line_buffer)
+
+        # complete from shell_runtime.commands
         candidates = []
 
         for name in sorted(self.repl.shell_runtime.commands.keys()):
