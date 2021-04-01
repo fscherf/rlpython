@@ -1,7 +1,9 @@
+from tempfile import NamedTemporaryFile
 import readline
 import socket
 import time
 
+from rlpython.utils.editor import run_editor
 from rlpython.repl import Repl
 
 from rlpython.protocol import (
@@ -146,6 +148,19 @@ class ReplClient(Repl):
             if message_type == MESSAGE_TYPE.PONG:
                 return
 
+    def edit(self, filename, lineno, text):
+        if text is not None:
+            temp_file = NamedTemporaryFile(suffix='.py')
+            filename = temp_file.name
+
+            with open(filename, 'w') as f:
+                f.write(text)
+                f.close()
+
+            filename = temp_file.name
+
+        run_editor(filename=filename, lineno=lineno)
+
     def run(self, command):
         self.send_message(encode_run_message(command))
 
@@ -159,8 +174,14 @@ class ReplClient(Repl):
             if message_type == MESSAGE_TYPE.WRITE:
                 self.write(payload)
 
+            # edit
+            elif message_type == MESSAGE_TYPE.EDIT:
+                filename, lineno, text = payload
+
+                self.edit(filename, lineno, text)
+
             # exit code
-            if message_type == MESSAGE_TYPE.EXIT_CODE:
+            elif message_type == MESSAGE_TYPE.EXIT_CODE:
                 self.exit_code = payload
 
                 return

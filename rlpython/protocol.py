@@ -4,7 +4,7 @@ import json
 logger = logging.getLogger('rlpython.protocol')
 
 END_OF_TRANSMISSION = bytes([4])
-MESSAGE_TYPES = range(1, 10)
+MESSAGE_TYPES = range(1, 11)
 
 
 class MESSAGE_TYPE:
@@ -17,6 +17,7 @@ class MESSAGE_TYPE:
     RUN = 7
     WRITE = 8
     EXIT_CODE = 9
+    EDIT = 10
 
 
 def encode_message(raw_message):
@@ -99,3 +100,12 @@ def encode_keyboard_interrupt_message():
 
 def encode_exit_code_message(exit_code):
     return encode_message([MESSAGE_TYPE.EXIT_CODE, exit_code])
+
+
+def encode_edit_message(filename, lineno, encode_text=False):
+    text = None
+
+    if encode_text:
+        text = open(filename, 'r').read()
+
+    return encode_message([MESSAGE_TYPE.EDIT, [filename, lineno, text]])
