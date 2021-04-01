@@ -11,6 +11,23 @@ class VariablesCommand:
     def __init__(self, repl):
         self.repl = repl
 
+    def complete(self, text, state, line_buffer):
+        names = []
+        candidates = []
+
+        for key in sorted(self.repl.variables.keys()):
+            value = self.repl.variables[key]
+
+            names.append('{}={}'.format(key, repr(value)))
+
+        for name in names:
+            if name.startswith(text):
+                candidates.append(name)
+
+        candidates.append(None)
+
+        return candidates[state]
+
     def run(self, argv):
         # parse command line
         argument_parser = ReplArgumentParser(repl=self.repl, prog='vars')
