@@ -22,6 +22,9 @@ def write_table(rows, write):
         column_widths[index] = max(column_widths[index])
 
     # write table out
+    def get_row_len(row):
+        return max([len(i) for i in row])
+
     def write_divider():
         for column_width in column_widths:
             write('+')
@@ -37,9 +40,10 @@ def write_table(rows, write):
         write('|\n')
 
     def write_row(row):
-        lines = max([len(i) for i in row])
+        lines = get_row_len(row)
+        row_index = rows.index(row)
 
-        if lines > 1:
+        if lines > 1 and row_index > 1:
             write_empty_row()
 
         for line_index in range(lines):
@@ -57,7 +61,10 @@ def write_table(rows, write):
 
             write('\n')
 
-        if lines > 1 and row is not rows[-1]:
+        if(lines > 1 and
+           row_index < len(rows) - 1 and
+           get_row_len(rows[row_index+1]) < 2):
+
             write_empty_row()
 
     write_divider()
