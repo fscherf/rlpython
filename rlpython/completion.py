@@ -22,11 +22,20 @@ class Completer:
         return candidates[state]
 
     def complete(self, text, state, line_buffer):
-        # shell
-        if line_buffer.startswith('%'):
-            line_buffer = line_buffer[1:]
+        try:
+            # shell
+            if line_buffer.startswith('%'):
+                line_buffer = line_buffer[1:]
 
-            return self.shell_complete(text=text, state=state)
+                return self.shell_complete(
+                    text=text,
+                    state=state,
+                    line_buffer=line_buffer,
+                )
 
-        # python
-        return self.python_complete(text, state)
+            # python
+            return self.python_complete(text, state)
+
+        except Exception as e:
+            self.repl.write('\n')
+            self.repl.write_exception(e, prefix='rlpython: ')

@@ -122,8 +122,12 @@ class ReplClient(Repl):
             if disconnected:
                 exit(1)
 
+            # write
+            if message_type == MESSAGE_TYPE.WRITE:
+                self.write(payload)
+
             # completion response
-            if message_type == MESSAGE_TYPE.COMPLETION_RESPONSE:
+            elif message_type == MESSAGE_TYPE.COMPLETION_RESPONSE:
                 return payload
 
     def handle_empty_line(self):
