@@ -3,12 +3,16 @@ import shlex
 from rlpython.utils.argument_parser import ReplArgumentParserError
 from rlpython.commands.variables import VariablesCommand
 from rlpython.commands.threads import ThreadsCommand
+from rlpython.commands.tasks import TasksCommand
+from rlpython.commands.loops import LoopsCommand
 from rlpython.commands.edit import EditCommand
 
 DEFAULT_COMMANDS = [
-    ThreadsCommand,
-    EditCommand,
     VariablesCommand,
+    ThreadsCommand,
+    TasksCommand,
+    LoopsCommand,
+    EditCommand,
 ]
 
 

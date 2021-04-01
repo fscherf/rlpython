@@ -7,6 +7,7 @@ import json
 import sys
 import os
 
+from rlpython.utils.gc_utils import get_object_by_id
 from rlpython.command_runtime import CommandRuntime
 from rlpython.python_runtime import PythonRuntime
 from rlpython.completion import Completer
@@ -108,6 +109,10 @@ class Repl:
 
     def set_domain(self, domain):
         self._domain = domain
+
+    # utils ###################################################################
+    def get_object_by_id(self, object_id):
+        return get_object_by_id(object_id)
 
     # commands ################################################################
     def install_command(self, command):
