@@ -1,4 +1,5 @@
 from pprint import pformat
+import builtins
 import inspect
 
 from rlpython.utils.attribute_table import write_attribute_table
@@ -12,6 +13,7 @@ class PythonRuntime:
 
         # override print
         self.globals['print'] = self.print_function
+        self.globals['_print'] = builtins.print
 
         # prepare special keywords
         self.locals['_'] = None
@@ -20,6 +22,7 @@ class PythonRuntime:
 
     def shutdown(self):
         del self.globals['print']
+        del self.globals['_print']
 
         del self.locals['_']
         del self.locals['_rlpython']
