@@ -15,7 +15,7 @@ def write_table(rows, write):
             rows[row_index][column_index] = lines
 
             column_widths[column_index].append(
-                max([get_length(line) for line in lines])
+                max([0] + [get_length(line) for line in lines])
             )
 
     for index, column_width in enumerate(column_widths):
