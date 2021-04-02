@@ -174,6 +174,12 @@ class Repl:
 
         self.write(color(text, fg='red'))
 
+    def write_warning(self, string):
+        self.write(color('WARNING: {}'.format(string), fg='yellow'))
+
+    def write_error(self, string):
+        self.write(color('ERROR: {}'.format(string), fg='red'))
+
     # line buffer #############################################################
     def clear_line_buffer(self):
         self.line_buffer = ''
