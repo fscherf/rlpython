@@ -1,11 +1,38 @@
 from rlcompleter import Completer as rlCompleter
+from itertools import chain
+
+
+class Namespace(dict):
+    def __init__(self, locals, globals):
+        self.locals = locals
+        self.globals = globals
+
+    def items(self):
+        return chain(
+            self.locals.items(),
+            self.globals.items(),
+        )
+
+    def __getitem__(self, name):
+        if name in self.locals:
+            return self.locals[name]
+
+        if name in self.globals:
+            return self.globals[name]
+
+        raise KeyError
 
 
 class Completer:
     def __init__(self, repl):
         self.repl = repl
 
-        self.rlcompleter = rlCompleter(namespace=self.repl.locals)
+        self.rlcompleter = rlCompleter(
+            namespace=Namespace(
+                locals=self.repl.locals,
+                globals=self.repl.globals,
+            ),
+        )
 
     def python_complete(self, text, state):
         return self.rlcompleter.complete(text, state)
