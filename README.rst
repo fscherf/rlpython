@@ -45,26 +45,23 @@ Attach a rlpython shell over network
     # rlpython localhost:5000
 
 
-Examples
---------
+Start a multisession shell server
+---------------------------------
+
+Server
+~~~~~~
+
+.. code-block:: python
+
+    import asyncio
+
+    import rlpython
+
+    loop = asyncio.get_event_loop()
+
+    with rlpython.embed(bind='localhost:5000', multi_session=True):
+        loop.run_forever()
 
 .. code-block:: text
 
-    >>> import arpgarse
-    >>> argparse.ArgumentParser
-    <class 'argparse.ArgumentParser'>
-
-    # inspect a python object
-    >>> argparse.ArgumentParser.add_argument?
-           id: 0x7f3046435a70
-         type: <class 'function'>
-         file: /home/fsc/.pyenv/versions/3.7.9/lib/python3.7/argparse.py:1328
-    signature: add_argument(self, *args, **kwargs)
-
-    # print docstring of a python object
-    >>> argparse.ArgumentParser.add_argument??
-    add_argument(dest, ..., name=value, ...)
-    add_argument(option_string, option_string, ..., name=value, ...)
-
-    # open the source code of a python object in your local editor
-    %edit argparse.ArgumentParser.add_argument
+    # rlpython localhost:5000
