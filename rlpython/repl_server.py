@@ -1,37 +1,88 @@
 import threading
 import socket
+import os
 
 from rlpython.repl_connection import ReplConnection
+from rlpython.utils.url import parse_url
 from rlpython.repl import Repl
 
 
 class ReplServer:
-    def __init__(self, host='localhost', port=0,
-                 repl_domain=Repl.DOMAIN.NETWORK, **repl_kwargs):
+    def __init__(self, url, permissions, repl_domain=Repl.DOMAIN.NETWORK,
+                 print=print, **repl_kwargs):
 
-        self.host = host
-        self.port = port
+        self.url = url
+        self.permissions = permissions
         self.repl_domain = repl_domain
+        self._print = print
         self.repl_kwargs = repl_kwargs
 
-    def setup(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.scheme, self.host, self.port = parse_url(url)
 
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind((self.host, self.port))
+    def setup(self):
+        # network
+        if self.scheme == 'rlpython':
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            bind_arg = (self.host, self.port)
+
+        # unix domain socket
+        elif self.scheme == 'file':
+            self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            bind_arg = self.host
+
+            try:
+                os.remove(self.host)
+
+            except OSError:
+                pass
+
+        self.sock.bind(bind_arg)
+
+        if self.scheme == 'file':
+            # set file permmisions
+            os.chmod(self.host, int(self.permissions, 8))
+
         self.sock.listen(1)
+
+    def print_bind_informations(self):
+        if not self._print:
+            return
+
+        if self.scheme == 'rlpython':
+            sock_name = self.sock.getsockname()
+
+            self._print(
+                'rlpython: running on {}:{}'.format(
+                    sock_name[0],
+                    sock_name[1],
+                )
+            )
+
+        elif self.scheme == 'file':
+            self._print(
+                'rlpython: running on file://{}'.format(self.host),
+            )
 
     def shutdown(self):
         self._running = False
 
+        # remove unix domain socket
+        if self.scheme == 'file':
+            os.remove(self.host)
+
     def __enter__(self):
         self.setup()
+        self.print_bind_informations()
         self.run_multi_session(**self.repl_kwargs)
 
         return self
 
     def __exit__(self, type, value, traceback):
         self.shutdown()
+
+    def get_host(self):
+        return self.sock.getsockname()[0]
 
     def get_port(self):
         return self.sock.getsockname()[1]

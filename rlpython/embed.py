@@ -1,12 +1,12 @@
 import inspect
 
 
-def embed(single_threaded=False, bind='', multi_session=False,
-          started_from_cmd_line=False, print=print, **repl_kwargs):
+def embed(single_threaded=False, bind='', permissions='600',
+          multi_session=False, started_from_cmd_line=False, print=print,
+          **repl_kwargs):
 
     from rlpython.frontend import start_frontend
     from rlpython.repl_server import ReplServer
-    from rlpython.utils.url import parse_url
     from rlpython.repl import Repl
 
     # use namespace of caller instead of own if nothing is set
@@ -33,12 +33,11 @@ def embed(single_threaded=False, bind='', multi_session=False,
 
         # single threaded
         if single_threaded:
-            host, port = parse_url(bind)
-
             repl_server = ReplServer(
-                host=host,
-                port=port,
+                url=bind,
+                permissions=permissions,
                 repl_domain=Repl.DOMAIN.NETWORK,
+                print=print,
                 **repl_kwargs,
             )
 
@@ -47,9 +46,7 @@ def embed(single_threaded=False, bind='', multi_session=False,
 
             try:
                 repl_server.setup()
-
-                print('rlpython: running on {}:{}'.format(host, repl_server.get_port()))  # NOQA
-
+                repl_server.print_bind_informations()
                 repl_server.run_single_session(**repl_kwargs)
 
             except OSError as exception:
@@ -78,6 +75,8 @@ def embed(single_threaded=False, bind='', multi_session=False,
         # multi threaded
         else:
             repl_server = ReplServer(
+                url='localhost:0',
+                permissions=permissions,
                 repl_domain=Repl.DOMAIN.LOCAL_NETWORK,
             )
 

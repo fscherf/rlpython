@@ -5,7 +5,6 @@ import os
 
 def handle_command_line():
     from rlpython.repl_client import ReplClient
-    from rlpython.utils.url import parse_url
     from rlpython import embed
 
     argument_parser = ArgumentParser(prog='rlpython')
@@ -42,16 +41,13 @@ def handle_command_line():
     # client mode
     if namespace.url:
         try:
-            host, port = parse_url(namespace.url)
+            repl_client = ReplClient(
+                url=namespace.url,
+                frontend_mode=namespace.frontend_mode,
+            )
 
-        except ValueError as exception:
-            exit(exception.message)
-
-        repl_client = ReplClient(
-            host=host,
-            port=port,
-            frontend_mode=namespace.frontend_mode,
-        )
+        except Exception as exception:
+            exit(str(exception))
 
         try:
             repl_client.interact()

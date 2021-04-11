@@ -2,8 +2,10 @@ from tempfile import NamedTemporaryFile
 import readline
 import socket
 import time
+import os
 
 from rlpython.utils.editor import run_editor
+from rlpython.utils.url import parse_url
 from rlpython.repl import Repl
 
 from rlpython.protocol import (
@@ -17,16 +19,21 @@ from rlpython.protocol import (
 
 
 class ReplClient(Repl):
-    def __init__(self, host, port, *args, frontend_mode=False, **kwargs):
-        self.host = host
-        self.port = port
-        self.url = '{}:{}'.format(host, port)
+    def __init__(self, url, *args, frontend_mode=False, **kwargs):
+        self.url = url
 
+        self.scheme, self.host, self.port = parse_url(url)
+
+        # setup prompt prefix
         if frontend_mode:
             prompt_prefix = ''
 
         else:
-            prompt_prefix = '{} '.format(self.url)
+            if self.scheme == 'file':
+                prompt_prefix = 'file://{} '.format(self.host)
+
+            else:
+                prompt_prefix = '{}:{} '.format(self.host, self.port)
 
         super().__init__(
             *args,
@@ -40,13 +47,21 @@ class ReplClient(Repl):
         if not exit_code:
             return
 
-        self.sock.send(payload)
+        try:
+            self.sock.send(payload)
+
+        except BrokenPipeError:
+            pass
 
     def recv_message(self):
         message_buffer = bytes()
 
         while True:
-            data = self.sock.recv(1)
+            try:
+                data = self.sock.recv(1)
+
+            except BrokenPipeError:
+                return True, None, None
 
             if not data:
                 return True, None, None
@@ -66,13 +81,20 @@ class ReplClient(Repl):
                 continue
 
     def setup(self):
-        # setup socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # network
+        if self.scheme == 'rlpython':
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            connect_arg = (self.host, self.port)
+
+        # unix domain socket
+        elif self.scheme == 'file':
+            self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            connect_arg = self.host
 
         # wait for connection
         while True:
             try:
-                self.sock.connect((self.host, self.port))
+                self.sock.connect(connect_arg)
 
                 break
 

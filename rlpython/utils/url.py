@@ -1,18 +1,30 @@
-def parse_url(url):
-    if isinstance(url, int):
-        return 'localhost', url
+from urllib.parse import urlparse, splitport
 
+
+def parse_url(raw_url):
     try:
-        if ':' in url:
-            host, port = url.split(':')
-            port = int(port)
+        if raw_url.startswith('file://'):
+            return 'file', raw_url[7:], None
 
-            return host, port
+        parse_result = urlparse(raw_url)
 
-        else:
-            port = int(url)
+        if not parse_result.scheme:
+            raw_url = 'rlpython://{}'.format(raw_url)
+            parse_result = urlparse(raw_url)
 
-            return 'localhost', port
+        scheme = parse_result.scheme
+        host = parse_result.netloc
+        port = parse_result.port
+
+        if port is None:
+            port = host
+            host = 'localhost'
+
+        host = splitport(host)[0]
+
+        return scheme, host, int(port)
 
     except Exception:
-        raise ValueError('invalid url format')
+        raise ValueError(
+            'invalid url format. valid formats: [HOST:]PORT, file://PATH',
+        )
