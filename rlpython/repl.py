@@ -10,6 +10,7 @@ import os
 from rlpython.utils.gc_utils import get_object_by_id
 from rlpython.command_runtime import CommandRuntime
 from rlpython.python_runtime import PythonRuntime
+from rlpython.shell_runtime import ShellRuntime
 from rlpython.completion import Completer
 from rlpython.utils.strings import color
 from rlpython import VERSION_STRING
@@ -114,6 +115,10 @@ class Repl:
         for command in commands:
             self.install_command(command)
 
+        self.shell_runtime = ShellRuntime(
+            repl=self,
+        )
+
         # finish
         self.clear_line_buffer()
         self.setup()
@@ -212,6 +217,9 @@ class Repl:
     def validate_line_buffer(self):
         if self.line_buffer.startswith('%'):
             return self.command_runtime.validate_source(self.line_buffer)
+
+        elif self.line_buffer.startswith('!'):
+            return self.shell_runtime.validate_source(self.line_buffer)
 
         return self.python_runtime.validate_source(self.line_buffer)
 
@@ -347,6 +355,9 @@ class Repl:
 
             elif command.startswith('%'):
                 self.exit_code = self.command_runtime.run(command)
+
+            elif command.startswith('!'):
+                self.exit_code = self.shell_runtime.run(command)
 
             else:
                 self.exit_code = self.python_runtime.run(command)
