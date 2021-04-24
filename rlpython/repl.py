@@ -10,6 +10,7 @@ import os
 from rlpython.utils.gc_utils import get_object_by_id
 from rlpython.command_runtime import CommandRuntime
 from rlpython.python_runtime import PythonRuntime
+from rlpython.templating import TemplatingEngine
 from rlpython.shell_runtime import ShellRuntime
 from rlpython.completion import Completer
 from rlpython.utils.strings import color
@@ -90,6 +91,9 @@ class Repl:
             **DEFAULT_VARIABLES,
             **variables,
         }
+
+        # setup templating engine
+        self.templating_engine = TemplatingEngine(repl=self)
 
         # setup completion
         self.completer = Completer(repl=self)
@@ -349,6 +353,10 @@ class Repl:
 
     def run(self, command):
         try:
+            if self.templating_engine.is_template(command):
+                command = self.templating_engine.render(command)
+                self.write(command)
+
             if command.strip() == '?':
                 self.write_help()
                 self.exit_code = 0
