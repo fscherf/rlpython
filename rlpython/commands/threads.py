@@ -8,6 +8,10 @@ from rlpython.utils.strings import color
 
 
 class ThreadsCommand:
+    """
+    List all running threads; Show stack of given thread
+    """
+
     NAME = 'threads'
 
     def __init__(self, repl):

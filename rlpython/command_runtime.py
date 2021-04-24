@@ -1,3 +1,4 @@
+import textwrap
 import shlex
 
 from rlpython.commands.unix_environment import UnixEnvironmentCommand
@@ -70,3 +71,27 @@ class CommandRuntime:
             self.repl.write_exception(exception)
 
         return exit_code
+
+    def gen_help_text(self):
+        text = ''
+
+        for command_name in sorted(self.commands.keys()):
+            command = self.commands[command_name]
+
+            text += '%{}'.format(command_name)
+
+            if command.__doc__:
+                doc_string = ''.join(command.__doc__).strip()
+
+                text += '\n'
+
+                text += textwrap.indent(
+                    '\n'.join(textwrap.wrap(doc_string, 76)),
+                    '    ',
+                )
+
+                text += '\n'
+
+            text += '\n'
+
+        return text

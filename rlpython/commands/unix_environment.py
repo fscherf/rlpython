@@ -7,6 +7,10 @@ from rlpython.utils.strings import color
 
 
 class UnixEnvironmentCommand:
+    """
+    List Unix environmet variables; Print value of given environmet variable
+    """
+
     NAME = 'env'
 
     def __init__(self, repl):

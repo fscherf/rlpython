@@ -8,6 +8,10 @@ from rlpython.utils.strings import color
 
 
 class TasksCommand:
+    """
+    List all running asyncio tasks
+    """
+
     NAME = 'tasks'
 
     def __init__(self, repl):

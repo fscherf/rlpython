@@ -6,6 +6,10 @@ from rlpython.utils.strings import color
 
 
 class EditCommand:
+    """
+    Open source code of given object in $EDITOR if source code is available
+    """
+
     NAME = 'edit'
 
     def __init__(self, repl):

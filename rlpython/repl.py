@@ -22,6 +22,7 @@ DEFAULT_PROMPT_PS2 = '... '
 
 DEFAULT_BANNER = """Python {} on {}
 rlpython {}
+Type '?' for help
 """.format(
     sys.version,
     sys.platform,
@@ -32,6 +33,30 @@ DEFAULT_VARIABLES = {
     'pretty_print': True,
     'repeat_last_command_on_enter': False,
 }
+
+HELP_TEXT = """
+rlpython
+========
+
+rlpython is a GNU Readline based Python REPL, fully compatible with
+Python's syntax.
+
+
+Help / Inspection
+-----------------
+
+?             Show this help text
+object?       Inspect given object
+object??      Show help text of given object
+%edit object  Open the source code of given object if available
+help          Python's builtin help system
+
+
+REPL Commands
+-------------
+
+{commands}
+"""
 
 
 class Repl:
@@ -198,6 +223,13 @@ class Repl:
     def write_banner(self):
         self.write(self.banner)
 
+    def write_help(self):
+        text = HELP_TEXT.format(
+            commands=self.command_runtime.gen_help_text(),
+        )
+
+        self.write(text.strip() + '\n')
+
     def gen_prompt(self):
         prompt_color = 'green'
 
@@ -309,7 +341,11 @@ class Repl:
 
     def run(self, command):
         try:
-            if command.startswith('%'):
+            if command.strip() == '?':
+                self.write_help()
+                self.exit_code = 0
+
+            elif command.startswith('%'):
                 self.exit_code = self.command_runtime.run(command)
 
             else:

@@ -6,6 +6,10 @@ from rlpython.utils.strings import color
 
 
 class VariablesCommand:
+    """
+    List, read and write REPL variables
+    """
+
     NAME = 'vars'
 
     def __init__(self, repl):

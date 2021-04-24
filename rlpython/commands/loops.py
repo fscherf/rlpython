@@ -6,6 +6,10 @@ from rlpython.utils.table import write_table
 
 
 class LoopsCommand:
+    """
+    List all running asyncio Loops
+    """
+
     NAME = 'loops'
 
     def __init__(self, repl):
