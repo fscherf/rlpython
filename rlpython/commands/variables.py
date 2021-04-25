@@ -10,7 +10,7 @@ class VariablesCommand:
     List, read and write REPL variables
     """
 
-    NAME = 'vars'
+    NAME = 'var'
 
     def __init__(self, repl):
         self.repl = repl
