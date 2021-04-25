@@ -4,11 +4,11 @@ import json
 import sys
 import os
 
+from rlpython.runtimes.command_runtime import CommandRuntime
+from rlpython.runtimes.python_runtime import PythonRuntime
+from rlpython.runtimes.shell_runtime import ShellRuntime
 from rlpython.utils.gc_utils import get_object_by_id
-from rlpython.command_runtime import CommandRuntime
-from rlpython.python_runtime import PythonRuntime
 from rlpython.templating import TemplatingEngine
-from rlpython.shell_runtime import ShellRuntime
 from rlpython.completion import Completer
 from rlpython.utils.strings import color
 from rlpython import VERSION_STRING
