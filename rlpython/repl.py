@@ -11,6 +11,7 @@ from rlpython.utils.gc_utils import get_object_by_id
 from rlpython.templating import TemplatingEngine
 from rlpython.completion import Completer
 from rlpython.utils.strings import color
+from rlpython.aliases import Aliases
 from rlpython import VERSION_STRING
 
 DEFAULT_HISTORY_FILE = '~/.rlpython.history'
@@ -120,6 +121,9 @@ class Repl:
             repl=self,
         )
 
+        # setup aliasses
+        self.aliases = Aliases(repl=self)
+
         # finish
         self.clear_line_buffer()
         self.setup()
@@ -216,13 +220,23 @@ class Repl:
         self.line_buffer = ''
 
     def validate_line_buffer(self):
-        if self.line_buffer.startswith('%'):
-            return self.command_runtime.validate_source(self.line_buffer)
+        try:
+            line_buffer = self.aliases.resolve(self.line_buffer)
 
-        elif self.line_buffer.startswith('!'):
-            return self.shell_runtime.validate_source(self.line_buffer)
+            if line_buffer.startswith('%'):
+                return self.command_runtime.validate_source(line_buffer)
 
-        return self.python_runtime.validate_source(self.line_buffer)
+            elif line_buffer.startswith('!'):
+                return self.shell_runtime.validate_source(line_buffer)
+
+            return self.python_runtime.validate_source(line_buffer)
+
+        except Exception as exception:
+            self.exit_code = 1
+
+            self.write_exception(exception, prefix='rlpython: ')
+
+            return False
 
     # I/O #####################################################################
     def write_warnings(self):
@@ -350,20 +364,28 @@ class Repl:
 
     def run(self, command):
         try:
+            # aliasses
+            command = self.aliases.resolve(command)
+
+            # templating
             if self.templating_engine.is_template(command):
                 command = self.templating_engine.render(command)
                 self.write(command)
 
+            # help
             if command.strip() == '?':
                 self.write_help()
                 self.exit_code = 0
 
+            # repl commands
             elif command.startswith('%'):
                 self.exit_code = self.command_runtime.run(command)
 
+            # shell commands
             elif command.startswith('!'):
                 self.exit_code = self.shell_runtime.run(command)
 
+            # python code
             else:
                 self.exit_code = self.python_runtime.run(command)
 
