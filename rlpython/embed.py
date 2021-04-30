@@ -1,13 +1,20 @@
 import inspect
+import logging
+import os
 
 
 def embed(single_threaded=False, bind='', permissions='600',
           multi_session=False, started_from_cmd_line=False, print=print,
-          **repl_kwargs):
+          debug=False, **repl_kwargs):
 
     from rlpython.frontend import start_frontend
     from rlpython.repl_server import ReplServer
     from rlpython.repl import Repl
+
+    # debug mode
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+        os.environ['RLPYTHON_DEBUG'] = 'True'
 
     # use namespace of caller instead of own if nothing is set
     if 'globals' not in repl_kwargs and 'locals' not in repl_kwargs:
