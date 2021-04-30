@@ -1,5 +1,4 @@
-import logging
-
+from rlpython.logging import SilentLogger
 from rlpython.repl import Repl
 
 from rlpython.protocol import (
@@ -14,7 +13,7 @@ from rlpython.protocol import (
     MESSAGE_TYPE,
 )
 
-logger = logging.getLogger('rlpython.server')
+logger = SilentLogger('rlpython.server')
 
 
 class SocketRepl(Repl):

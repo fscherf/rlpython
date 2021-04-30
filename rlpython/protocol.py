@@ -1,7 +1,7 @@
-import logging
+from rlpython.logging import SilentLogger
 import json
 
-logger = logging.getLogger('rlpython.protocol')
+logger = SilentLogger('rlpython.protocol')
 
 END_OF_TRANSMISSION = bytes([4])
 MESSAGE_TYPES = range(1, 11)
