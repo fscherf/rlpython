@@ -69,7 +69,11 @@ class ReplServer:
 
         # remove unix domain socket
         if self.scheme == 'file':
-            os.remove(self.host)
+            try:
+                os.remove(self.host)
+
+            except OSError:
+                pass
 
     def __enter__(self):
         self.setup()
