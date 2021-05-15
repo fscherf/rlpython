@@ -6,6 +6,10 @@ DEFAULT_ALIASES = {
     'pwd': '!pwd',
     'cd': '!cd',
     '..': '!cd ..',
+    'touch': '!touch',
+    'mkdir': '!mkdir',
+    'cat': '!cat',
+    'rm': '!rm',
 }
 
 
