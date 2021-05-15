@@ -16,6 +16,18 @@ class Aliases:
         self.aliases = copy(DEFAULT_ALIASES)
 
     def resolve(self, command):
+        # check for name collisions with repl variables
+        if '=' in command:
+            return command
+
+        _command = command.strip()
+
+        if(_command in self.repl.globals or
+           _command in self.repl.locals):
+
+            return command
+
+        # resolve aliases
         for name, value in self.aliases.items():
             if not command.startswith(name):
                 continue
