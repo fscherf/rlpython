@@ -3,6 +3,9 @@ from urllib.parse import urlparse, splitport
 
 def parse_url(raw_url):
     try:
+        if isinstance(raw_url, int):
+            raw_url = str(raw_url)
+
         if raw_url.startswith('file://'):
             return 'file', raw_url[7:], None
 
