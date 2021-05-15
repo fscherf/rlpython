@@ -1,5 +1,7 @@
 from rlcompleter import Completer as rlCompleter
 from itertools import chain
+from glob import glob
+import os
 
 
 class Namespace(dict):
@@ -61,13 +63,45 @@ class Completer:
 
         return candidates[state]
 
+    def file_complete(self, text, state, line_buffer):
+        path = os.path.normpath(text)
+
+        if os.path.isdir(path) and path != '/':
+            path += '/'
+
+        candidates = []
+
+        for candidate in glob(path + '*'):
+            candidate = os.path.normpath(candidate)
+
+            if os.path.isdir(candidate):
+                candidate += '/'
+
+            if candidate not in candidates:
+                candidates.append(candidate)
+
+        candidates.sort()
+        candidates.append(None)
+
+        return candidates[state]
+
     def complete(self, text, state, line_buffer):
         try:
+            line_buffer = self.repl.aliases.resolve(line_buffer + '\n')
+
             # commands
             if line_buffer.startswith('%'):
                 line_buffer = line_buffer[1:]
 
                 return self.command_complete(
+                    text=text,
+                    state=state,
+                    line_buffer=line_buffer,
+                )
+
+            # shell
+            elif line_buffer.startswith('!'):
+                return self.file_complete(
                     text=text,
                     state=state,
                     line_buffer=line_buffer,
