@@ -1,4 +1,4 @@
 from rlpython.embed import embed  # NOQA
 
-VERSION = (0, 6, 3)
+VERSION = (0, 7)
 VERSION_STRING = '{}'.format('.'.join([str(i) for i in VERSION]))
