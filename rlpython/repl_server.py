@@ -19,6 +19,12 @@ class ReplServer:
 
         self.scheme, self.host, self.port = parse_url(url)
 
+        # setup for local networking
+        if(self.scheme == 'file' or
+           self.host in ('127.0.0.1', 'localhost', '::')):
+
+            self.repl_domain = Repl.DOMAIN.LOCAL_NETWORK
+
     def setup(self):
         # network
         if self.scheme == 'rlpython':
