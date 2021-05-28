@@ -15,6 +15,13 @@ class EditCommand:
     def __init__(self, repl):
         self.repl = repl
 
+    def complete(self, text, state, line_buffer):
+        return self.repl.completer.python_complete(
+            text=text,
+            state=state,
+            line_buffer=line_buffer[len(self.NAME)+1:],
+        )
+
     def run(self, argv):
         # parse command line
         argument_parser = ReplArgumentParser(repl=self.repl, prog='edit')
