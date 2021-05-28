@@ -2,7 +2,6 @@ from rlpython.protocol import encode_edit_message
 
 from rlpython.utils.argument_parser import ReplArgumentParser
 from rlpython.utils.editor import NoEditorError, run_editor
-from rlpython.utils.strings import color
 
 
 class EditCommand:
@@ -33,8 +32,8 @@ class EditCommand:
         obj = self.repl.python_runtime.eval(arguments.object)
 
         if not obj:
-            self.repl.write(
-                color("ERROR: '{}' not found\n".format(arguments.object), fg='red'),  # NOQA
+            self.repl.write_error(
+                '{} not found\n'.format(repr(arguments.object)),
             )
 
             return 1
@@ -43,15 +42,15 @@ class EditCommand:
         filename, lineno = self.repl.python_runtime.get_file(obj)
 
         if not filename:
-            self.repl.write(
-                color("ERROR: '{}' source file not found\n".format(repr(obj)), fg='red'),  # NOQA
+            self.repl.write_error(
+                '{} source file not found\n'.format(repr(obj)),  # NOQA
             )
 
             return 1
 
         if not filename.endswith('.py'):
             self.repl.write(
-                color("ERROR: '{}' is no python file\n".format(filename), fg='red'),  # NOQA
+                "'{}' is no python file\n".format(filename),  # NOQA
             )
 
             return 1
@@ -62,9 +61,7 @@ class EditCommand:
                 run_editor(filename, lineno=lineno)
 
             except NoEditorError:
-                self.repl.write(
-                    color('ERROR: no editor found\n', fg='red'),
-                )
+                self.repl.write_error('no editor found\n')
 
         # network
         else:
