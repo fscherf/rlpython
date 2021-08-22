@@ -353,9 +353,12 @@ class Repl:
                 if answer == 'n':
                     return False
 
-            except(EOFError, KeyboardInterrupt):
+            except EOFError:
                 self.write('\n')
+                return True
 
+            except KeyboardInterrupt:
+                self.write('\n')
                 return False
 
     def handle_ctrl_c(self):
