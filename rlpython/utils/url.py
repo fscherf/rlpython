@@ -2,30 +2,27 @@ from urllib.parse import urlparse, splitport
 
 
 def parse_url(raw_url):
-    try:
-        if isinstance(raw_url, int):
-            raw_url = str(raw_url)
+    """
+    examples:
+        'localhost'
+        'localhost:1000'
+        'rlpython://localhost:1000'
+        'file://socket'
 
-        if raw_url.startswith('file://'):
-            return 'file', raw_url[7:], None
+    returns (scheme, host, port)
+    """
+
+    try:
+        if '://' not in raw_url:
+            raw_url = 'rlpython://{}'.format(raw_url)
 
         parse_result = urlparse(raw_url)
 
-        if not parse_result.scheme:
-            raw_url = 'rlpython://{}'.format(raw_url)
-            parse_result = urlparse(raw_url)
-
         scheme = parse_result.scheme
-        host = parse_result.netloc
-        port = parse_result.port
+        host, port = splitport(parse_result.netloc)
+        port = int(port or '0')
 
-        if port is None:
-            port = host
-            host = 'localhost'
-
-        host = splitport(host)[0]
-
-        return scheme, host, int(port)
+        return scheme, host, port
 
     except Exception:
         raise ValueError(
