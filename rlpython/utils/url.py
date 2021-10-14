@@ -13,6 +13,9 @@ def parse_url(raw_url):
     """
 
     try:
+        if raw_url.startswith('file://'):
+            return 'file', raw_url[7:], None
+
         if '://' not in raw_url:
             raw_url = 'rlpython://{}'.format(raw_url)
 
