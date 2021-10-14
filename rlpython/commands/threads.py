@@ -89,7 +89,7 @@ class ThreadsCommand:
             rows.append([
                 thread.ident,
                 thread.getName(),
-                thread.isAlive(),
+                thread.is_alive(),
                 thread.isDaemon(),
                 task,
             ])
