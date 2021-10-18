@@ -36,7 +36,7 @@ class Aliases:
             if not command.startswith(name):
                 continue
 
-            if(len(command) >= len(name) and
+            if(len(command) > len(name) and
                command[len(name)] in (' ', '\n', '\t')):
 
                 return '{}{}'.format(value, command[len(name):])
