@@ -66,14 +66,10 @@ def handle_command_line():
     # local mode
     repl_kwargs = {}
 
-    for key in dir(namespace):
-        if key.startswith('_'):
-            continue
+    for key, value in vars(namespace).items():
 
         if key in ('frontend_mode',):
             continue
-
-        value = getattr(namespace, key)
 
         if value is None:
             continue
