@@ -70,7 +70,7 @@ def handle_command_line():
         if key.startswith('_'):
             continue
 
-        if key in ('frontend_mode'):
+        if key in ('frontend_mode',):
             continue
 
         value = getattr(namespace, key)
