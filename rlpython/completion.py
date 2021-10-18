@@ -222,11 +222,11 @@ class Completer:
         return candidates[state]
 
     def python_complete(self, text, state, line_buffer):
-        cleaned_line_buffer = line_buffer.strip()
+        cleaned_line_buffer = line_buffer.strip() + ' '
 
         # imports
-        if(cleaned_line_buffer.startswith('from') or
-           cleaned_line_buffer.startswith('import')):
+        if(cleaned_line_buffer.startswith('from ') or
+           cleaned_line_buffer.startswith('import ')):
 
             return self._complete_imports(text, state, line_buffer)
 
