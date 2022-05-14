@@ -17,12 +17,11 @@ def embed(single_threaded=False, bind='', permissions='600',
         os.environ['RLPYTHON_DEBUG'] = 'True'
 
     # use namespace of caller instead of own if nothing is set
-    if 'globals' not in repl_kwargs and 'locals' not in repl_kwargs:
+    if 'globals' not in repl_kwargs:
         stack = inspect.stack()
         frame_info = stack[1]
 
         repl_kwargs['globals'] = frame_info.frame.f_globals
-        repl_kwargs['locals'] = frame_info.frame.f_locals
 
     # setup warnings
     if 'warnings' not in repl_kwargs:

@@ -6,27 +6,29 @@ from rlpython.utils.attribute_table import write_attribute_table
 
 
 class PythonRuntime:
-    def __init__(self, repl, globals={}, locals={}):
+    def __init__(self, repl, globals={}):
         self.repl = repl
         self.globals = globals
-        self.locals = locals
 
         # override print
         self.globals['print'] = self.print_function
         self.globals['_print'] = builtins.print
 
         # prepare special keywords
-        self.locals['_'] = None
-        self.locals['_rlpython'] = self.repl
-        self.locals['_exception'] = None
+        self.globals['_'] = None
+        self.globals['_rlpython'] = self.repl
+        self.globals['_exception'] = None
 
     def shutdown(self):
+
+        # restore default print
         del self.globals['print']
         del self.globals['_print']
 
-        del self.locals['_']
-        del self.locals['_rlpython']
-        del self.locals['_exception']
+        # remove special keywords
+        del self.globals['_']
+        del self.globals['_rlpython']
+        del self.globals['_exception']
 
     def print_function(self, *strings, end='\n'):
         string = ' '.join([str(i) for i in strings]) + end
@@ -165,7 +167,7 @@ class PythonRuntime:
     # code running ############################################################
     def eval(self, source, safe=True):
         try:
-            return eval(source, self.globals, self.locals)
+            return eval(source, self.globals)
 
         except Exception:
             if not safe:
@@ -201,14 +203,14 @@ class PythonRuntime:
                 )
 
             except SyntaxError as exception:
-                self.locals['_exception'] = exception
+                self.globals['_exception'] = exception
                 self.repl.write_exception(exception)
 
                 return 1
 
         # run code
         try:
-            return_value = run_code(code, self.globals, self.locals)
+            return_value = run_code(code, self.globals)
 
         except KeyboardInterrupt:
             exit_code = 1
@@ -218,12 +220,12 @@ class PythonRuntime:
         except Exception as exception:
             exit_code = 1
 
-            self.locals['_exception'] = exception
+            self.globals['_exception'] = exception
             self.repl.write_exception(exception)
 
         else:
             if run_code is eval:
-                self.locals['_'] = return_value
+                self.globals['_'] = return_value
 
                 if describe:
                     self.write_description(return_value, describe)

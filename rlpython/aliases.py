@@ -26,9 +26,7 @@ class Aliases:
 
         _command = command.strip()
 
-        if(_command in self.repl.globals or
-           _command in self.repl.locals):
-
+        if _command in self.repl.globals:
             return command
 
         # resolve aliases

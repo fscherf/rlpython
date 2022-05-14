@@ -20,9 +20,6 @@ class Namespace(dict):
         )
 
     def __getitem__(self, name):
-        if name in self.locals:
-            return self.locals[name]
-
         if name in self.globals:
             return self.globals[name]
 
@@ -34,10 +31,7 @@ class Completer:
         self.repl = repl
 
         self.rlcompleter = rlCompleter(
-            namespace=Namespace(
-                locals=self.repl.locals,
-                globals=self.repl.globals,
-            ),
+            namespace=self.repl.globals,
         )
 
         self._module_cache = []

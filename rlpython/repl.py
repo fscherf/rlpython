@@ -71,7 +71,7 @@ class Repl:
                  prompt_ps2=DEFAULT_PROMPT_PS2,
                  history_file=DEFAULT_HISTORY_FILE,
                  history_size=DEFAULT_HISTORY_SIZE,
-                 globals={}, locals={}, commands=[], **variables):
+                 globals={}, commands=[], **variables):
 
         self.banner = banner
         self.warnings = warnings
@@ -81,7 +81,6 @@ class Repl:
         self.history_file = os.path.expanduser(history_file)
         self.history_size = history_size
         self.globals = globals
-        self.locals = locals
 
         self.exit_code = 0
 
@@ -108,7 +107,6 @@ class Repl:
         self.python_runtime = PythonRuntime(
             repl=self,
             globals=globals,
-            locals=locals,
         )
 
         self.command_runtime = CommandRuntime(

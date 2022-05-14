@@ -79,7 +79,6 @@ def handle_command_line():
     try:
         embed(
             globals={},
-            locals={},
             single_threaded=True,
             started_from_cmd_line=True,
             **repl_kwargs,
