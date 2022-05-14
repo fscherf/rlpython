@@ -192,11 +192,15 @@ class Repl:
 
     # error management ########################################################
     def write_exception(self, exception, prefix=''):
-        lines = format_exception(
-            etype=type(exception),
-            value=exception,
-            tb=exception.__traceback__,
-        )
+        if sys.version_info >= (3, 10):
+            lines = format_exception(exception)
+
+        else:
+            lines = format_exception(
+                etype=type(exception),
+                value=exception,
+                tb=exception.__traceback__,
+            )
 
         text = ''.join(lines)
 
