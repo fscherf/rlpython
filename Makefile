@@ -42,3 +42,30 @@ clean:
 	rm -rf $(PYTHON_ENV_ROOT)
 
 envs: env packaging-env
+
+# examples ####################################################################
+rlpython: env
+	. $(PYTHON_VENV)/bin/activate && \
+	. examples/environment.sh && \
+	rlpython $(args)
+
+local-embed: env
+	. $(PYTHON_VENV)/bin/activate && \
+	. examples/environment.sh && \
+	python examples/local-embed.py
+
+socket-server: env
+	. $(PYTHON_VENV)/bin/activate && \
+	. examples/environment.sh && \
+	python examples/socket-server.py
+
+multi-session-socket-server: env
+	. $(PYTHON_VENV)/bin/activate && \
+	. examples/environment.sh && \
+	python examples/multi-session-socket-server.py
+
+unix-domain-socket-server: env
+	. $(PYTHON_VENV)/bin/activate && \
+	. examples/environment.sh && \
+	python examples/unix-domain-socket-server.py
+
