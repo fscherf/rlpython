@@ -21,7 +21,10 @@ def embed(single_threaded=False, bind='', permissions='600',
         stack = inspect.stack()
         frame_info = stack[1]
 
-        repl_kwargs['globals'] = frame_info.frame.f_globals
+        repl_kwargs['globals'] = {
+            **frame_info.frame.f_globals,
+            **frame_info.frame.f_locals,
+        }
 
     # setup warnings
     if 'warnings' not in repl_kwargs:
