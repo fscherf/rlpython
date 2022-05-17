@@ -77,16 +77,19 @@ class PythonRuntime:
 
     # buffer helper ###########################################################
     def write_representation(self, value):
-        if self.repl.get_variable('pretty_print'):
-            try:
-                self.repl.write(pformat(value) + '\n')
+        if(self.repl.get_variable('pretty_print') and
+           not isinstance(value, str)):
 
-                return
+            try:
+                value = pformat(value)
 
             except Exception:
-                pass
+                value = repr(value)
 
-        self.repl.write(repr(value) + '\n')
+        else:
+            value = repr(value)
+
+        self.repl.write(f'{value}\n')
 
     def write_short_description(self, value):
         rows = []
