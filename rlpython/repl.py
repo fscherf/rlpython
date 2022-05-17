@@ -33,6 +33,7 @@ VARIABLE_DEFAULTS = {
     'pretty_print': True,
     'repeat_last_command_on_enter': False,
     'templating_enabled': True,
+    'underscore_numbers': True,
 }
 
 HELP_TEXT = """

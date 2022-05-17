@@ -80,8 +80,13 @@ class PythonRuntime:
         if(self.repl.get_variable('pretty_print') and
            not isinstance(value, str)):
 
+            underscore_numbers = self.repl.get_variable('underscore_numbers')
+
             try:
-                value = pformat(value)
+                value = pformat(
+                    object=value,
+                    underscore_numbers=underscore_numbers,
+                )
 
             except Exception:
                 value = repr(value)
