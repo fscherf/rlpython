@@ -32,6 +32,7 @@ Type '?' for help
 VARIABLE_DEFAULTS = {
     'pretty_print': True,
     'repeat_last_command_on_enter': False,
+    'templating_enabled': True,
 }
 
 HELP_TEXT = """
@@ -380,7 +381,9 @@ class Repl:
             command = self.aliases.resolve(command)
 
             # templating
-            if self.templating_engine.is_template(command):
+            if(self.get_variable('templating_enabled') and
+               self.templating_engine.is_template(command)):
+
                 command = self.templating_engine.render(command)
                 self.write(command)
 
