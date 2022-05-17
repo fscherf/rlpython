@@ -77,7 +77,7 @@ class PythonRuntime:
 
     # buffer helper ###########################################################
     def write_representation(self, value):
-        if self.repl.variables.get('pretty_print', True):
+        if self.repl.get_variable('pretty_print'):
             try:
                 self.repl.write(pformat(value) + '\n')
 

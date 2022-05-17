@@ -149,6 +149,12 @@ class Repl:
     def get_object_by_id(self, object_id):
         return get_object_by_id(object_id)
 
+    def get_variable(self, name, default=None):
+        if default is None and name in VARIABLE_DEFAULTS:
+            default = VARIABLE_DEFAULTS[name]
+
+        return self.variables.get(name, default)
+
     # commands ################################################################
     def install_command(self, command):
         self.command_runtime.install_command(command)
@@ -334,7 +340,7 @@ class Repl:
     def handle_empty_line(self):
         self.clear_line_buffer()
 
-        if self.variables['repeat_last_command_on_enter']:
+        if self.get_variable('repeat_last_command_on_enter'):
             command = self.history[-1]
 
             self.write(command + '\n')

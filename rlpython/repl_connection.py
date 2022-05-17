@@ -89,7 +89,7 @@ class ReplConnection:
 
         # ping (empty line)
         if message_type == MESSAGE_TYPE.PING:
-            if self.repl.variables['repeat_last_command_on_enter']:
+            if self.repl.get_variable('repeat_last_command_on_enter'):
                 command = self.repl.history[-1]
 
                 self.repl.write(command + '\n')
