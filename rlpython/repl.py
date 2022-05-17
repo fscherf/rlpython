@@ -29,7 +29,7 @@ Type '?' for help
     VERSION_STRING,
 )
 
-DEFAULT_VARIABLES = {
+VARIABLE_DEFAULTS = {
     'pretty_print': True,
     'repeat_last_command_on_enter': False,
 }
@@ -85,7 +85,7 @@ class Repl:
         self.exit_code = 0
 
         self.variables = {
-            **DEFAULT_VARIABLES,
+            **VARIABLE_DEFAULTS,
             **variables,
         }
 
