@@ -1,14 +1,24 @@
-import subprocess
+from threading import Thread
 import sys
+import os
 
 
 def start_frontend(port):
-    process = subprocess.Popen([
-        sys.executable,
-        '-m',
-        'rlpython.command_line',
-        'localhost:{}'.format(port),
-        '--frontend',
-    ])
+    def _run():
+        os.system(
+            '{} -m rlpython.command_line localhost:{} --frontend'.format(
+                sys.executable,
+                port,
+            ),
+        )
 
-    return process
+    thread = Thread(
+        name='rlpython Frontend',
+        daemon=False,
+        target=_run,
+    )
+
+    thread.start()
+
+    return thread
+

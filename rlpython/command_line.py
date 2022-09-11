@@ -19,25 +19,6 @@ def handle_command_line():
 
     namespace = argument_parser.parse_args()
 
-    # frontend mode
-    if namespace.frontend_mode:
-        def restore_pgrp(*args, **kwargs):
-            os.tcsetpgrp(fd, old_pgrp)
-            os.setpgid(0, old_pgrp)
-
-            exit(0)
-
-        signal.signal(signal.SIGTSTP, signal.SIG_IGN)
-        signal.signal(signal.SIGTTOU, signal.SIG_IGN)
-        signal.signal(signal.SIGTERM, restore_pgrp)
-
-        pid = os.getpid()
-        fd = os.open('/dev/tty', os.O_RDONLY)
-        old_pgrp = os.tcgetpgrp(fd)
-
-        os.setpgid(0, pid)
-        os.tcsetpgrp(fd, pid)
-
     # client mode
     if namespace.url:
         try:
@@ -55,12 +36,6 @@ def handle_command_line():
         finally:
             repl_client.shutdown()
 
-            if namespace.frontend_mode:
-                restore_pgrp()
-
-        if namespace.frontend_mode:
-            restore_pgrp()
-
         exit(0)
 
     # local mode
@@ -76,17 +51,12 @@ def handle_command_line():
 
         repl_kwargs[key] = value
 
-    try:
-        embed(
-            globals={},
-            single_threaded=True,
-            started_from_cmd_line=True,
-            **repl_kwargs,
-        )
-
-    finally:
-        if namespace.frontend_mode:
-            restore_pgrp()
+    embed(
+        globals={},
+        single_threaded=True,
+        started_from_cmd_line=True,
+        **repl_kwargs,
+    )
 
 
 if __name__ == '__main__':
