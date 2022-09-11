@@ -1,9 +1,17 @@
+from threading import Lock
 import inspect
 import logging
 import os
 
+_lock = Lock()
 
-def embed(single_threaded=False, bind='', permissions='600',
+
+def embed(*args, **kwargs):
+    with _lock:
+        return _embed(*args, **kwargs)
+
+
+def _embed(single_threaded=False, bind='', permissions='600',
           multi_session=False, started_from_cmd_line=False, print=print,
           debug=False, **repl_kwargs):
 
@@ -19,7 +27,7 @@ def embed(single_threaded=False, bind='', permissions='600',
     # use namespace of caller instead of own if nothing is set
     if 'globals' not in repl_kwargs:
         stack = inspect.stack()
-        frame_info = stack[1]
+        frame_info = stack[2]
 
         repl_kwargs['globals'] = {
             **frame_info.frame.f_globals,
