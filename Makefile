@@ -1,71 +1,64 @@
 PYTHON=python3
 
 PYTHON_ENV_ROOT=envs
-PYTHON_VENV=$(PYTHON_ENV_ROOT)/$(PYTHON)-env
-PYTHON_PACKAGING_VENV=$(PYTHON_ENV_ROOT)/$(PYTHON)-packaging-env
+PYTHON_DEV_ENV=$(PYTHON_ENV_ROOT)/$(PYTHON)-dev
+PYTHON_PACKAGING_ENV=$(PYTHON_ENV_ROOT)/$(PYTHON)-packaging-env
 
-.PHONY: clean
+.PHONY: clean shell freeze dist rlpython local-embed socket-server \
+	multi-session-socket-server unix-domain-socket-server
 
 # development environment #####################################################
-$(PYTHON_VENV)/.created:
-	rm -rf $(PYTHON_VENV) && \
-	$(PYTHON) -m venv $(PYTHON_VENV) && \
-	. $(PYTHON_VENV)/bin/activate && \
-	pip install --upgrade pip && \
-	pip install -e . && \
-	date > $(PYTHON_VENV)/.created
-
-env: $(PYTHON_VENV)/.created
+$(PYTHON_DEV_ENV): pyproject.toml
+	rm -rf $(PYTHON_DEV_ENV) && \
+	$(PYTHON) -m venv $(PYTHON_DEV_ENV) && \
+	. $(PYTHON_DEV_ENV)/bin/activate && \
+	pip install pip --upgrade && \
+	pip install -e .
 
 # packaging environment #######################################################
-$(PYTHON_PACKAGING_VENV)/.created: REQUIREMENTS.packaging.txt
-	rm -rf $(PYTHON_PACKAGING_VENV) && \
-	$(PYTHON) -m venv $(PYTHON_PACKAGING_VENV) && \
-	. $(PYTHON_PACKAGING_VENV)/bin/activate && \
+$(PYTHON_PACKAGING_ENV): pyproject.toml
+	rm -rf $(PYTHON_PACKAGING_ENV) && \
+	$(PYTHON) -m venv $(PYTHON_PACKAGING_ENV) && \
+	. $(PYTHON_PACKAGING_ENV)/bin/activate && \
 	pip install --upgrade pip && \
-	pip install -r REQUIREMENTS.packaging.txt
-	date > $(PYTHON_PACKAGING_VENV)/.created
-
-packaging-env: $(PYTHON_PACKAGING_VENV)/.created
-
-sdist: packaging-env
-	. $(PYTHON_PACKAGING_VENV)/bin/activate && \
-	rm -rf dist *.egg-info && \
-	./setup.py sdist
-
-_release: sdist
-	. $(PYTHON_PACKAGING_VENV)/bin/activate && \
-	twine upload --config-file ~/.pypirc.fscherf dist/*
+	pip install .[packaging]
 
 # helper ######################################################################
 clean:
 	rm -rf $(PYTHON_ENV_ROOT)
 
-envs: env packaging-env
-
 # examples ####################################################################
-rlpython: env
-	. $(PYTHON_VENV)/bin/activate && \
+rlpython: | $(PYTHON_DEV_ENV)
+	. $(PYTHON_DEV_ENV)/bin/activate && \
 	. examples/environment.sh && \
 	rlpython $(args)
 
-local-embed: env
-	. $(PYTHON_VENV)/bin/activate && \
+local-embed: | $(PYTHON_DEV_ENV)
+	. $(PYTHON_DEV_ENV)/bin/activate && \
 	. examples/environment.sh && \
 	python examples/local-embed.py
 
-socket-server: env
-	. $(PYTHON_VENV)/bin/activate && \
+socket-server: | $(PYTHON_DEV_ENV)
+	. $(PYTHON_DEV_ENV)/bin/activate && \
 	. examples/environment.sh && \
 	python examples/socket-server.py
 
-multi-session-socket-server: env
-	. $(PYTHON_VENV)/bin/activate && \
+multi-session-socket-server: | $(PYTHON_DEV_ENV)
+	. $(PYTHON_DEV_ENV)/bin/activate && \
 	. examples/environment.sh && \
 	python examples/multi-session-socket-server.py
 
-unix-domain-socket-server: env
-	. $(PYTHON_VENV)/bin/activate && \
+unix-domain-socket-server: | $(PYTHON_DEV_ENV)
+	. $(PYTHON_DEV_ENV)/bin/activate && \
 	. examples/environment.sh && \
 	python examples/unix-domain-socket-server.py
 
+# packaging ###################################################################
+dist: | $(PYTHON_PACKAGING_ENV)
+	. $(PYTHON_PACKAGING_ENV)/bin/activate && \
+	rm -rf dist *.egg-info && \
+	python -m build
+
+_release: dist
+	. $(PYTHON_PACKAGING_ENV)/bin/activate && \
+	twine upload --config-file ~/.pypirc.fscherf dist/*

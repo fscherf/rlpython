@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+version = "0.10"
+name = "rlpython"
+description = "GNU Readline based Python REPL without any external dependencies"
+
+authors = [
+    { name="Florian Scherf", email="mail@florianscherf.de" },
+]
+
+license = { file="LICENSE.txt" }
+readme = "README.rst"
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Shells",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+
+[project.optional-dependencies]
+packaging = [
+    "build",
+    "twine",
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/fscherf/rlpython"
+"Repository" = "https://github.com/fscherf/rlpython"
+"Bug Tracker" = "https://github.com/fscherf/rlpython/issues"
+
+
+[tool.setuptools]
+script-files = [
+    "bin/rlpython",
+]
+
+[tool.setuptools.packages.find]
+include = ["rlpython"]
