@@ -49,4 +49,4 @@ script-files = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["rlpython"]
+include = ["rlpython*"]
