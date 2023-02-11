@@ -1,8 +1,15 @@
 from traceback import format_exception
-import readline
 import json
 import sys
 import os
+
+try:
+    import readline
+
+    READLINE_AVAILABLE = False
+
+except ImportError:
+    READLINE_AVAILABLE = False
 
 from rlpython.runtimes.command_runtime import CommandRuntime
 from rlpython.runtimes.python_runtime import PythonRuntime
@@ -98,12 +105,13 @@ class Repl:
         self.completer = Completer(repl=self)
 
         # setup readline
-        readline.set_auto_history(False)
-        readline.parse_and_bind('tab: complete')
-        readline.set_completer(self.complete)
-        readline.set_completer_delims(' \t\n`~!@#$%^&*()-=+[{]}\\|;:\'",<>?')
+        if READLINE_AVAILABLE:
+            readline.set_auto_history(False)
+            readline.parse_and_bind('tab: complete')
+            readline.set_completer(self.complete)
+            readline.set_completer_delims(' \t\n`~!@#$%^&*()-=+[{]}\\|;:\'",<>?')
 
-        self.read_history()
+            self.read_history()
 
         # setup runtimes
         self.python_runtime = PythonRuntime(
@@ -322,7 +330,9 @@ class Repl:
             if not self.validate_line_buffer():
                 continue
 
-            self.add_history(self.line_buffer.strip())
+            if READLINE_AVAILABLE:
+                self.add_history(self.line_buffer.strip())
+
             self.run(self.line_buffer)
             self.clear_line_buffer()
 

@@ -1,8 +1,15 @@
 from tempfile import NamedTemporaryFile
-import readline
 import socket
 import time
 import os
+
+try:
+    import readline
+
+    READLINE_AVAILABLE = True
+
+except ImportError:
+    READLINE_AVAILABLE = False
 
 from rlpython.utils.editor import run_editor
 from rlpython.utils.url import parse_url
