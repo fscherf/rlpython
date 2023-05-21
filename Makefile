@@ -53,6 +53,11 @@ unix-domain-socket-server: | $(PYTHON_DEV_ENV)
 	. examples/environment.sh && \
 	python examples/unix-domain-socket-server.py
 
+custom-command: | $(PYTHON_DEV_ENV)
+	. $(PYTHON_DEV_ENV)/bin/activate && \
+	. examples/environment.sh && \
+	python examples/custom-command.py
+
 # packaging ###################################################################
 dist: | $(PYTHON_PACKAGING_ENV)
 	. $(PYTHON_PACKAGING_ENV)/bin/activate && \
