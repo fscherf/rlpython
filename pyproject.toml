@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-version = "0.10.2"
+version = "0.10.3"
 name = "rlpython"
 description = "GNU Readline based Python REPL without any external dependencies"
 
