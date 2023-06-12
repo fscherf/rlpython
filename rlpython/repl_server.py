@@ -73,6 +73,8 @@ class ReplServer:
     def shutdown(self):
         self._running = False
 
+        self.sock.close()
+
         # remove unix domain socket
         if self.scheme == 'file':
             try:
